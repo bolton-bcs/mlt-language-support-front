@@ -1,0 +1,1 @@
+export {updatePercentage} from './user'

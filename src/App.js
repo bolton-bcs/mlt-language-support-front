@@ -1,22 +1,48 @@
-import { useState } from 'react';
-import './App.css';
-import { Login } from './Login';
-import { Register } from './Register';
+import React, { Component } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Loadable from 'react-loadable';
+import './App.scss';
+import {BASE_URL} from "./constance/Constance";
 
-function App() {
-  const [currentForm, setCurrentForm] = useState('login');
+const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
 
-  const toggleForm = (formName) => {
-    setCurrentForm(formName);
+// Containers
+const DefaultLayout = Loadable({
+  loader: () => import('./containers/DefaultLayout'),
+  loading
+});
+
+// Pages
+const Login = Loadable({
+  loader: () => import('./views/Pages/Login'),
+  loading
+});
+
+
+const Page404 = Loadable({
+  loader: () => import('./views/Pages/Page404'),
+  loading
+});
+
+const Page500 = Loadable({
+  loader: () => import('./views/Pages/Page500'),
+  loading
+});
+
+class App extends Component {
+
+  render() {
+    return (
+      <BrowserRouter>
+          <Switch>
+            <Route exact path={BASE_URL+"/login"} name="Login Page" component={Login} />
+            <Route exact path={BASE_URL+"/404"} name="Page 404" component={Page404} />
+            <Route exact path={BASE_URL+"/500"} name="Page 500" component={Page500} />
+            <Route path={"/"} name="Home" component={DefaultLayout} />
+          </Switch>
+      </BrowserRouter>
+    );
   }
-
-  return (
-    <div className="App">
-      {
-        currentForm === "login" ? <Login onFormSwitch={toggleForm} /> : <Register onFormSwitch={toggleForm} />
-      }
-    </div>
-  );
 }
 
 export default App;
