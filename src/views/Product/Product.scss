@@ -1,0 +1,42 @@
+.Table{
+  //text-align: center;
+}
+
+.Table tr{
+  background-color: white;
+}
+
+.Table td{
+  padding-left: 10px;
+  vertical-align: middle!important;
+}
+
+.DescriptionTD{
+  max-width: 320px;
+}
+
+.btn-align{
+  text-align: center!important;
+}
+
+.Table Button{
+  margin:5px
+}
+
+.PackageSelectTitle{
+  margin-left: 20px;
+  margin-right: 10px;
+  color: #5c6873;
+  font-size: 15.5px;
+}
+
+.TotalPrice{
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: right
+}
+
+.TableRow{
+  padding-top: 15px!important;
+  padding-bottom: 15px!important;
+}

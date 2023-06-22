@@ -14,8 +14,12 @@ import {
   InputGroupText,
   Row
 } from 'reactstrap';
+import {BASE_URL} from "../../../constance/Constance";
+import * as authService from '../../../services/auth';
+import qs from 'qs';
 import Cookies from "js-cookie";
 import {StorageStrings} from '../../../constance/StorageStrings';
+import * as CommonFunc from '../../../utils/CommonFunc';
 import BG from '../../../assets/img/brand/bg.jpg';
 import Logo from '../../../assets/img/brand/proj_logo.png';
 import Loader from "../../../components/Loader/loading";
@@ -73,6 +77,7 @@ class Login extends Component {
     localStorage.setItem(StorageStrings.USERID,'1');
     localStorage.setItem(StorageStrings.LOGGED,'true');
     this.setState({loading:false})
+    this.props.history.push(BASE_URL+'/manage-products');
   }
 
   onTextChange=(event)=>{
