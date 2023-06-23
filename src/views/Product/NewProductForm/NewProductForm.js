@@ -14,9 +14,9 @@ import {
   Label, Modal, ModalBody
 } from "reactstrap";
 import Dropzone from 'react-dropzone'
-import './NewBooksForm.scss'
+import './NewProductForm.scss'
 import App from "../../../App";
-import * as BookService from '../../../services/books';
+import * as ProductService from '../../../services/product';
 import * as CommonFunc from '../../../utils/CommonFunc';
 
 import * as Validation from '../../../validation/Validation'
@@ -28,7 +28,6 @@ import axios from 'axios';
 import Cookies from "js-cookie";
 import {StorageStrings} from "../../../constance/StorageStrings";
 import {asDev, DEV_URL_REMOTE, PROD_URL_REMOTE} from "../../../services/apiConfig";
-import render from "enzyme/src/render";
 
 export {PROD_URL_REMOTE, DEV_URL_REMOTE} from '../../../services/apiConfig';
 
@@ -64,7 +63,7 @@ function getResizedCanvas(canvas, newWidth, newHeight) {
   return tmpCanvas;
 }
 
-class NewBooksForm extends Component {
+class NewProductForm extends Component {
   state = {
     bookId: '',
     file: {},
@@ -828,5 +827,5 @@ class NewBooksForm extends Component {
   }
 }
 
-export default NewBooksForm;
+export default NewProductForm;
 

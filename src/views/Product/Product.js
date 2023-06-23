@@ -11,11 +11,10 @@ import {
 import {Link} from "react-router-dom";
 import {BASE_URL} from "../../constance/Constance";
 import './Product.scss';
-import * as BooksService from '../../services/books';
+import * as ProductService from '../../services/product';
 import * as CommonFunc from '../../utils/CommonFunc';
 import ModelContent from "../../components/Model/Books/Model";
 import Loader from "../../components/Loader/loading";
-import PaginationComponent from "react-reactstrap-pagination";
 import {StorageStrings} from "../../constance/StorageStrings";
 import swal from "sweetalert";
 
@@ -60,7 +59,7 @@ class Product extends Component {
       loading: false,
 
     })
-    // await BooksService.getAllBooks({page: page, size: size})
+    // await ProductService.getAllBooks({page: page, size: size})
     //   .then(response => {
     //     let list = [];
     //
@@ -96,7 +95,7 @@ class Product extends Component {
 
   searchBookByName = async (page, size) => {
     // this.setState({loading: true});
-    // await BooksService.searchBook({page: page, size: size, name: this.state.searchTxt.value})
+    // await ProductService.searchBook({page: page, size: size, name: this.state.searchTxt.value})
     //   .then(response => {
     //     if (response.success) {
     //       let list = [];
@@ -139,7 +138,7 @@ class Product extends Component {
     //   bookId: id,
     //   bookStatus: status
     // }
-    // await BooksService.updateBookStatus(body)
+    // await ProductService.updateBookStatus(body)
     //   .then(response => {
     //     if (response.success) {
     //       if (status === 'DELETED') {

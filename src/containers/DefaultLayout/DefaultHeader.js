@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 
 import {AppAsideToggler, AppHeaderDropdown, AppNavbarBrand, AppSidebarToggler} from '@coreui/react';
 import logo from '../../assets/img/brand/singleLogo.png';
-import minLogo from '../../assets/img/brand/headMinLogo.png';
 import Admin from '../../assets/img/brand/admin.png';
 import * as CommonFunc from '../../utils/CommonFunc';
 import swal from "sweetalert";
@@ -48,7 +47,7 @@ class DefaultHeader extends Component {
         <AppSidebarToggler className="d-lg-none" display="md" mobile/>
         <AppNavbarBrand
           full={{src: logo, width: 89, height: 25, alt: 'CoreUI Logo'}}
-          minimized={{src: minLogo, width: 30, height: 30, alt: 'CoreUI Logo'}}
+          minimized={{src: logo, width: 30, height: 30, alt: 'CoreUI Logo'}}
         />
         <AppSidebarToggler className="d-md-down-none" display="lg"/>
 

@@ -21,7 +21,6 @@ import ModelContent from "../../components/Model/PublicUser/Model";
 import userImg from '../../assets/img/brand/user.jpg';
 import Loader from "../../components/Loader/loading";
 import {DateRangePickerComponent} from '@syncfusion/ej2-react-calendars';
-import PaginationComponent from "react-reactstrap-pagination";
 import swal from "sweetalert";
 import CloseIMG from '../../assets/img/icon/close.png'
 

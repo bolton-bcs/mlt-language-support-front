@@ -85,7 +85,7 @@ class DefaultLayout extends Component {
                         )}/>
                     ) : (null);
                   })}
-                  {/*<Redirect from={"/"} to={BASE_URL + "/dashboard"}/>*/}
+                  <Redirect from={"/"} to={BASE_URL + "/manage-products"}/>
                 </Switch>
               </Suspense>
             </Container>
