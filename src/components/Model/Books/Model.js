@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Button, Card, CardBody, CardHeader, Col, FormGroup, Input, Label, ModalBody} from "reactstrap";
-import {Multiselect} from "multiselect-react-dropdown";
 
 function lettersChanges(str) {
   return str.replace(/(\B)[^ ]*/g, match => (match.toLowerCase())).replace(/^[^ ]/g, match => (match.toUpperCase()))
@@ -51,13 +50,13 @@ class Model extends Component {
                 <Col xs="6">
                   <FormGroup>
                     <Label>Package</Label>
-                    <Multiselect
-                      selectedValues={this.props.packages}
-                      displayValue="name"
-                      disable={true}
-                      keepSearchTerm={true}
-                      hidePlaceholder={true}
-                    />
+                    {/*<Multiselect*/}
+                    {/*  selectedValues={this.props.packages}*/}
+                    {/*  displayValue="name"*/}
+                    {/*  disable={true}*/}
+                    {/*  keepSearchTerm={true}*/}
+                    {/*  hidePlaceholder={true}*/}
+                    {/*/>*/}
                   </FormGroup>
                 </Col>
               </FormGroup>

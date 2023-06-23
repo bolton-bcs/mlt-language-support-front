@@ -20,16 +20,10 @@ import NotVerifyIMG from '../../assets/img/icon/notVerified.jpg';
 import ModelContent from "../../components/Model/PublicUser/Model";
 import userImg from '../../assets/img/brand/user.jpg';
 import Loader from "../../components/Loader/loading";
-import * as PackageService from "../../services/package";
 import {DateRangePickerComponent} from '@syncfusion/ej2-react-calendars';
 import PaginationComponent from "react-reactstrap-pagination";
 import swal from "sweetalert";
-import '../../scss/sweetalert.scss';
-import {CSVLink} from "react-csv";
-import DownloadPng from "../../assets/img/DownloadPng.jpg";
-import ReactFlagsSelect from 'react-flags-select';
 import CloseIMG from '../../assets/img/icon/close.png'
-import Countries from '../../components/Json/countries.json';
 
 let prev = 0;
 
@@ -74,8 +68,6 @@ class ProductRequest extends Component {
     countryCode: '',
     countryName: ''
   }
-
-  csvLinkRef = React.createRef();
 
   toggle(i) {
     const newArray = this.state.dropdownOpen.map((element, index) => {
@@ -213,27 +205,6 @@ class ProductRequest extends Component {
   }
 
   getAllPackages = async () => {
-    await PackageService.getAllPackage()
-      .then(response => {
-        if (response.success) {
-          const list = [];
-          response.body.map((items) => {
-            list.push({
-              id: items.packageId,
-              name: items.name,
-              type: items.type
-            })
-          })
-          this.setState({
-            packageList: list
-          })
-        } else {
-          CommonFunc.notifyMessage(response.message)
-        }
-      })
-      .catch(error => {
-        CommonFunc.notifyMessage(error.message, error.status);
-      })
   }
 
   badgeStatusHandler(status) {
@@ -365,7 +336,6 @@ class ProductRequest extends Component {
           });
 
           await this.setState({downloadList: list, loading: false});
-          this.csvLinkRef.current.link.click();
 
         } else {
           CommonFunc.notifyMessage(response.message);
@@ -378,19 +348,10 @@ class ProductRequest extends Component {
       });
   }
 
-  getCountryName = (countryCode) => {
-    const countries = Countries;
-    for (const c of countries) {
-      if (c.alpha2Code === countryCode) {
-        return c.name;
-      }
-    }
-  }
-
   countryDropDownSelector = (countryCode) => {
     let countryName;
     if (countryCode !== '') {
-      countryName = this.getCountryName(countryCode);
+      countryName = '';
       this.setState({
         countryCode: countryCode,
         countryName: countryName
@@ -465,29 +426,29 @@ class ProductRequest extends Component {
 
                   </Col>
 
-                  <div className={"SelectContainer"}>
-                    <ReactFlagsSelect
-                      selected={countryCode}
-                      // onSelect={countryCode => this.countryDropDownSelector(countryCode)}
-                      showSelectedLabel={true}
-                      selectedSize={countryName.length < 20 || window.innerWidth >= 1700 ? 15.5 : 10}
-                      fullWidth={false}
-                      showSecondarySelectedLabel={true}
-                      selectButtonClassName={"CountryDropdown"}
-                      showSecondaryOptionLabel={true}
-                      placeholder={'All Countries'}
-                      className={countryName.length < 20 || window.innerWidth >= 1700 ?'':'max-width'}
-                    />
+                  {/*<div className={"SelectContainer"}>*/}
+                  {/*  <ReactFlagsSelect*/}
+                  {/*    selected={countryCode}*/}
+                  {/*    // onSelect={countryCode => this.countryDropDownSelector(countryCode)}*/}
+                  {/*    showSelectedLabel={true}*/}
+                  {/*    selectedSize={countryName.length < 20 || window.innerWidth >= 1700 ? 15.5 : 10}*/}
+                  {/*    fullWidth={false}*/}
+                  {/*    showSecondarySelectedLabel={true}*/}
+                  {/*    selectButtonClassName={"CountryDropdown"}*/}
+                  {/*    showSecondaryOptionLabel={true}*/}
+                  {/*    placeholder={'All Countries'}*/}
+                  {/*    className={countryName.length < 20 || window.innerWidth >= 1700 ?'':'max-width'}*/}
+                  {/*  />*/}
 
-                    {countryCode !== '' && (
-                      <img src={CloseIMG} width={14} height={14}
-                           // onClick={() => this.countryDropDownSelector('')}
-                           alt={'close'}
-                           className={countryName.length < 20 || window.innerWidth >= 1700 ?"closeBtn":"closeBtn2"}
-                      />
-                    )}
+                  {/*  {countryCode !== '' && (*/}
+                  {/*    <img src={CloseIMG} width={14} height={14}*/}
+                  {/*         // onClick={() => this.countryDropDownSelector('')}*/}
+                  {/*         alt={'close'}*/}
+                  {/*         className={countryName.length < 20 || window.innerWidth >= 1700 ?"closeBtn":"closeBtn2"}*/}
+                  {/*    />*/}
+                  {/*  )}*/}
 
-                  </div>
+                  {/*</div>*/}
 
 
                   <div style={{position: 'absolute', right: 20}}>

@@ -17,9 +17,8 @@ import Dropzone from 'react-dropzone'
 import './NewBooksForm.scss'
 import App from "../../../App";
 import * as BookService from '../../../services/books';
-import * as PackageService from '../../../services/package';
 import * as CommonFunc from '../../../utils/CommonFunc';
-import {Multiselect} from 'multiselect-react-dropdown';
+
 import * as Validation from '../../../validation/Validation'
 import {BASE_URL} from "../../../constance/Constance";
 import Cropper from 'react-easy-crop'
@@ -188,28 +187,6 @@ class NewBooksForm extends Component {
    * get all package endpoint
    * */
   getAllPackages = () => {
-    PackageService.getAllPackage()
-      .then(response => {
-        if (response.success) {
-          const list = [];
-          response.body.map((items) => {
-            list.push({
-              name: items.name,
-              packageId: items.packageId,
-              type: items.type,
-              price: items.price
-            })
-          })
-          this.setState({
-            packagesList: list
-          })
-        } else {
-          CommonFunc.notifyMessage(response.message)
-        }
-      })
-      .catch(error => {
-        CommonFunc.notifyMessage(error.message, error.status);
-      })
   }
 
   /**
@@ -567,14 +544,7 @@ class NewBooksForm extends Component {
                   {/*  <option value="0">Please select package</option>*/}
                   {/*  {packageList}*/}
                   {/*</Input>*/}
-                  <Multiselect
-                    selectedValues={selectedPackages}
-                    options={packagesList}
-                    onSelect={this.onSelect}
-                    onRemove={this.onRemove}
-                    displayValue="name"
-                    placeholder={'Select Packages'}
-                  />
+
                 </Col>
               </FormGroup>
 

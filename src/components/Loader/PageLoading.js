@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Modal} from "reactstrap";
 import './loader.scss'
-import HashLoader from "react-spinners/HashLoader";
 import SyncLoader from "react-spinners/SyncLoader";
 import { CircularProgressbar } from 'react-circular-progressbar';
 

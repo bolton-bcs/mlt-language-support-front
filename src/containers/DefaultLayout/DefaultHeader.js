@@ -10,7 +10,6 @@ import Admin from '../../assets/img/brand/admin.png';
 import * as CommonFunc from '../../utils/CommonFunc';
 import swal from "sweetalert";
 import * as constants from "../../constance/Constance";
-import '../../scss/sweetalert.scss';
 
 const propTypes = {
   children: PropTypes.node,

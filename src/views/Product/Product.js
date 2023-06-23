@@ -18,7 +18,6 @@ import Loader from "../../components/Loader/loading";
 import PaginationComponent from "react-reactstrap-pagination";
 import {StorageStrings} from "../../constance/StorageStrings";
 import swal from "sweetalert";
-import '../../scss/sweetalert.scss'
 
 let prev = 0;
 

@@ -5,8 +5,6 @@ import * as CommonFunc from "../../../utils/CommonFunc";
 import Loader from "../../Loader/loading";
 import NotVerifyIMG from "../../../assets/img/icon/notVerified.jpg";
 import VerifyIMG from "../../../assets/img/icon/verified.jpg";
-import Countries from "../../Json/countries.json";
-import Flag from 'react-world-flags'
 
 function lettersChanges(str) {
   return str.replace(/(\B)[^ ]*/g, match => (match.toLowerCase())).replace(/^[^ ]/g, match => (match.toUpperCase()))
@@ -30,15 +28,6 @@ class Model extends Component {
 
   componentDidMount() {
     this.getPublicUserById(this.props.userId);
-  }
-
-  getCountryName = (country) => {
-    const countries = Countries;
-    for (const c of countries) {
-      if (c.name === country) {
-        return c.alpha2Code;
-      }
-    }
   }
 
   getPublicUserById = async (id) => {
@@ -67,7 +56,7 @@ class Model extends Component {
             mobile: mobile,
             country: country,
             school: school,
-            countryCode: this.getCountryName(country)
+            countryCode: ''
           })
         } else {
           CommonFunc.notifyMessage(response.message);
@@ -142,8 +131,8 @@ class Model extends Component {
               <FormGroup>
                 <Label htmlFor="vat">Country</Label>
                 <Input type="text" id="vat" disabled={true} value={'           ' + country}/>
-                <Flag code={countryCode} height={15} title={country}
-                      style={{position: 'absolute', bottom: 90, marginLeft: 10}}/>
+                {/*<Flag code={countryCode} height={15} title={country}*/}
+                {/*      style={{position: 'absolute', bottom: 90, marginLeft: 10}}/>*/}
               </FormGroup>
               <FormGroup>
                 <Label htmlFor="postal-code">Email verified ? </Label>
