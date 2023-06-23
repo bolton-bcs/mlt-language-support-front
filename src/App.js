@@ -35,7 +35,6 @@ const Register = Loadable({
 })
 
 class App extends Component {
-
   render() {
     return (
       <BrowserRouter>
