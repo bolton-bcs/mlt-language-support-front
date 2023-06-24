@@ -26,7 +26,9 @@
     "react-spinners": "^0.10.6",
     "reactstrap": "^7.0.2",
     "sweetalert": "^2.1.2",
-    "toastr": "^2.1.4"
+    "toastr": "^2.1.4",
+    "flag-icon-css": "^3.2.1",
+    "simple-line-icons": "^2.4.1"
   },
   "devDependencies": {
     "react-scripts": "2.1.3",
