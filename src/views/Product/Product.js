@@ -43,17 +43,17 @@ class Product extends Component {
       valid: true
     },
     modelVisible: false,
-    selectedBookData: {},
+    selectedProductData: {},
     loading: true,
     asSearch: false
   }
 
   componentDidMount() {
     this.handleSelected = this.handleSelected.bind(this);
-    this.getAllBooks(0, 10);
+    this.getAllProducts(0, 10);
   }
 
-  getAllBooks = async (page, size) => {
+  getAllProducts = async (page, size) => {
     // this.setState({loading: true})
     this.setState({
       loading: false,
@@ -93,7 +93,7 @@ class Product extends Component {
     //   })
   }
 
-  searchBookByName = async (page, size) => {
+  searchProductByName = async (page, size) => {
     // this.setState({loading: true});
     // await ProductService.searchBook({page: page, size: size, name: this.state.searchTxt.value})
     //   .then(response => {
@@ -132,7 +132,7 @@ class Product extends Component {
     //   })
   }
 
-  updateBookStatus = async (id, status) => {
+  updateProductStatus = async (id, status) => {
     // this.setState({loading: true})
     // const body = {
     //   bookId: id,
@@ -200,19 +200,19 @@ class Product extends Component {
       let now = new Date().getTime();
       if (now - prev >= 1000) {
         prev = now;
-        this.searchBookByName(0, 10)
+        this.searchProductByName(0, 10)
       }
     }, 1000)
 
   }
 
   onTogglePopup = (data) => {
-    localStorage.setItem(StorageStrings.BOOK_ID, data.bookId);
+    localStorage.setItem(StorageStrings.BOOK_ID, data.productId);
     this.setState({
       modelVisible: !this.state.modelVisible,
-      selectedBookData: {
-        bookId: data.bookId,
-        title: data.bookName,
+      selectedProductData: {
+        productId: data.productId,
+        title: data.productName,
         author: data.author,
         description: data.description,
         language: data.language,
@@ -220,7 +220,7 @@ class Product extends Component {
         folderUrl: data.folderUrl,
         packages: data.packages,
         viewCount: data.viewCount,
-        bookType: this.checkBookCategory(data.bookType),
+        productType: this.checkProductCategory(data.productType),
         grade:data.grade
       }
     })
@@ -228,16 +228,16 @@ class Product extends Component {
 
   handleSelected(selectedPage) {
     if (!this.state.asSearch) {
-      this.getAllBooks(selectedPage - 1, 10)
+      this.getAllProducts(selectedPage - 1, 10)
     } else {
-      this.searchBookByName(selectedPage - 1, 10)
+      this.searchProductByName(selectedPage - 1, 10)
     }
   }
 
-  async deleteHandler(bookId, status) {
+  async deleteHandler(productId, status) {
     swal({
       title: "Are you sure?",
-      text: "Are you sure you want to delete this book?",
+      text: "Are you sure you want to delete this product?",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -245,12 +245,12 @@ class Product extends Component {
     })
       .then((willDelete) => {
         if (willDelete) {
-          this.updateBookStatus(bookId, status);
+          this.updateProductStatus(productId, status);
         }
       });
   }
 
-  checkBookCategory(type) {
+  checkProductCategory(type) {
     switch (type) {
       case 'EDUCATIONAL_BOOK':
         return 'Educational Book';
@@ -262,7 +262,7 @@ class Product extends Component {
   }
 
   render() {
-    const {totalElements, list, searchTxt, modelVisible, selectedBookData, loading} = this.state;
+    const {totalElements, list, searchTxt, modelVisible, selectedProductData, loading} = this.state;
 
     const listData = list.map((items, i) => (
       <tr key={i}>
@@ -274,11 +274,11 @@ class Product extends Component {
           <Badge color={this.badgeStatusHandler(items.status).color} className={"shadow"}>{items.status}</Badge>
         </td>
         <td className={'btn-align'}>
-          <Link to={{pathname: BASE_URL + "/manage-story-books/add-new-book", state: {asEdit: true, items: items}}}>
+          <Link to={{pathname: BASE_URL + "/manage-product/add-new-product", state: {asEdit: true, items: items}}}>
             <Button color="dark" className="btn-pill shadow">Edit</Button>
           </Link>
           <Button color="danger" className="btn-pill shadow"
-                  onClick={() => this.deleteHandler(items.bookId, 'DELETED')}>Delete</Button>
+                  onClick={() => this.deleteHandler(items.productId, 'DELETED')}>Delete</Button>
         </td>
       </tr>
     ));
@@ -301,9 +301,7 @@ class Product extends Component {
                   </Col>
 
                   <div style={{position: 'absolute', right: 30}}>
-                    <Link to={{pathname: BASE_URL + "/manage-story-books/add-new-book", state: {asEdit: false}}}>
-                      <Button color="primary mr-2" className="btn-pill shadow">Add New</Button>
-                    </Link>
+                      <Button color="primary mr-2" className="btn-pill shadow" onClick={this.onTogglePopup}>Add New</Button>
                     <Button color="primary" className="btn-pill shadow">Export CSV</Button>
                   </div>
 
@@ -331,21 +329,22 @@ class Product extends Component {
         </Row>
         <Modal isOpen={modelVisible} toggle={this.onTogglePopup}
                className={'modal-lg ' + this.props.className}>
-          <ModalHeader toggle={this.onTogglePopup}>Book Details</ModalHeader>
+          <ModalHeader toggle={this.onTogglePopup}>Product Details</ModalHeader>
           <ModelContent
-            title={selectedBookData.title}
-            author={selectedBookData.author}
-            description={selectedBookData.description}
-            language={selectedBookData.language}
-            coverImage={selectedBookData.coverImage}
-            packages={selectedBookData.packages}
-            folderUrl={selectedBookData.folderUrl}
-            viewCount={selectedBookData.viewCount}
-            bookType={selectedBookData.bookType}
-            grade={selectedBookData.grade}
+            title={'selectedProductData.title'}
+            author={'selectedProductData.author'}
+            description={'selectedProductData.description'}
+            language={'selectedProductData.language'}
+            coverImage={'selectedProductData.coverImage'}
+            packages={'selectedProductData.packages'}
+            folderUrl={'selectedProductData.folderUrl'}
+            viewCount={'selectedProductData.viewCount'}
+            bookType={'selectedProductData.bookType'}
+            grade={'selectedProductData.grade'}
           />
           <ModalFooter>
             <Button color="secondary" onClick={this.onTogglePopup}>Cancel</Button>
+            <Button color="primary" onClick={this.onTogglePopup}>Add</Button>
           </ModalFooter>
         </Modal>
 
