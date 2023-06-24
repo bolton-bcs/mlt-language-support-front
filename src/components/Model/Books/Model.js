@@ -1,91 +1,129 @@
 import React, {Component} from 'react';
-import {Button, Card, CardBody, CardHeader, Col, FormGroup, Input, Label, ModalBody} from "reactstrap";
+import {Button, Card, CardBody, CardHeader, Col, FormGroup, Input, Label, ModalBody, Dropdown,DropdownItem,DropdownMenu,DropdownToggle} from "reactstrap";
+import Dropzone from "react-dropzone";
+import "../Modal.scss"
 
 function lettersChanges(str) {
   return str.replace(/(\B)[^ ]*/g, match => (match.toLowerCase())).replace(/^[^ ]/g, match => (match.toUpperCase()))
 }
 
 class Model extends Component {
+  state={
+    drop: true,
+    src: null,
+    imgBase64: '',
+    asImageEdit: false,
+    dropdownOpen:false
+  }
+
+  handleDrop = acceptedFiles => {
+    if (acceptedFiles && acceptedFiles.length > 0) {
+      const reader = new FileReader();
+      reader.addEventListener('load', () =>
+        this.setState({src: reader.result, drop: false,asImageEdit:true})
+      );
+      reader.readAsDataURL(acceptedFiles[0]);
+    }
+  }
+
+  onSelectFile = e => {
+    if (e.target.files && e.target.files.length > 0) {
+      const reader = new FileReader();
+      reader.addEventListener('load', () =>
+        this.setState({src: reader.result, drop: false,asImageEdit:true})
+      );
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
   render() {
+    const {asImageEdit,drop,imgBase64,src,dropdownOpen}= this.state;
     return (
       <ModalBody>
         <Col xs="12" sm="12">
           <Card>
             <CardHeader>
-              <strong>Book Details</strong>
+              <strong>Add Product</strong>
             </CardHeader>
             <CardBody>
-              <FormGroup>
-                <Label htmlFor="vat">Book Title</Label>
-                <Input type="text" disabled={true} value={this.props.title}/>
-              </FormGroup>
-              <FormGroup row className="my-0">
-                {/*<Col xs={this.props.grade !== null ? "6" : "12"}>*/}
-                {/*  <FormGroup>*/}
-                {/*    <Label htmlFor="vat">Book Category</Label>*/}
-                {/*    <Input type="text" disabled={true} value={this.props.bookType}/>*/}
-                {/*  </FormGroup>*/}
-                {/*</Col>*/}
-                {this.props.grade && (
-                  <Col xs="6">
-                    <FormGroup>
-                      <Label htmlFor="vat">Grade</Label>
-                      <Input type="text" disabled={true} value={lettersChanges(this.props.grade)}/>
-                    </FormGroup>
-                  </Col>
-                )}
-              </FormGroup>
 
-              <FormGroup>
-                <Label htmlFor="vat">Author</Label>
-                <Input type="text" disabled={true} value={this.props.author}/>
-              </FormGroup>
               <FormGroup row className="my-0">
-                <Col xs="6">
-                  <FormGroup>
-                    <Label>Language</Label>
-                    <Input type="text" disabled={true} value={this.props.language}/>
-                  </FormGroup>
+                <Col xs="6" className="mt-2">
+
+                  {asImageEdit ?
+                    <div className={"EditableStyle"} onClick={() => this.setState({asImageEdit: false})}>
+                      <img src={src} alt="" width={'100%'} height={'100%'}/>
+                      <i className="cui-cloud-upload icons font-2xl"></i>
+                    </div>
+                    :
+                    <div className={"App"}>
+                      <Dropzone
+                        onDrop={this.handleDrop}
+                        accept="image/*"
+                        minSize={1024}
+                        maxSize={3072000}
+                      >
+                        {({
+                            getRootProps,
+                            getInputProps,
+                            isDragActive,
+                            isDragAccept,
+                            isDragReject
+                          }) => {
+                          const additionalClass = isDragAccept
+                            ? "accept"
+                            : isDragReject
+                              ? "reject"
+                              : "";
+
+                          return (
+                            <div
+                              {...getRootProps({
+                                className: `dropzone ${additionalClass}`
+                              })}
+                            >
+                              <input {...getInputProps()} onChange={this.onSelectFile}/>
+                              <span>{isDragActive ? "📂" : "📁"}</span>
+                              <p>Drag'n'drop images</p>
+                            </div>
+                          );
+                        }}
+                      </Dropzone>
+                    </div>
+                  }
+
                 </Col>
                 <Col xs="6">
                   <FormGroup>
-                    <Label>Package</Label>
-                    {/*<Multiselect*/}
-                    {/*  selectedValues={this.props.packages}*/}
-                    {/*  displayValue="name"*/}
-                    {/*  disable={true}*/}
-                    {/*  keepSearchTerm={true}*/}
-                    {/*  hidePlaceholder={true}*/}
-                    {/*/>*/}
+                    <Label htmlFor="vat">Product Name</Label>
+                    <Input type="text" value={this.props.title}/>
+                  </FormGroup>
+                  <FormGroup>
+                    <Label htmlFor="vat">Description</Label>
+                    <Input type="textarea" value={this.props.description}/>
+                  </FormGroup>
+                  <FormGroup>
+                    <Label htmlFor="vat">Unit Price</Label>
+                    <Input type="text" value={this.props.title}/>
+                  </FormGroup>
+                  <FormGroup>
+                    <Label htmlFor="vat">Category</Label>
+                    <Input type="text" value={this.props.title}/>
+                  </FormGroup>
+                  <FormGroup>
+                    <Label htmlFor="vat">Category</Label>
+                    <Dropdown isOpen={dropdownOpen} toggle={()=>this.setState({dropdownOpen: !dropdownOpen})}>
+                      <DropdownToggle caret  className="w-100 text-left bg-white">Category</DropdownToggle>
+                      <DropdownMenu>
+                        <DropdownItem>Some Action1</DropdownItem>
+                        <DropdownItem>Some Action2</DropdownItem>
+                        <DropdownItem>Some Action3</DropdownItem>
+                        <DropdownItem>Some Action4</DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
                   </FormGroup>
                 </Col>
               </FormGroup>
-              {this.props.description !== "" ? (
-                <FormGroup>
-                  <Label htmlFor="vat">Description</Label>
-                  <Input type="textarea" disabled={true} value={this.props.description}/>
-                </FormGroup>
-
-              ) : null}
-              <FormGroup>
-                <Label htmlFor="vat">View Count</Label>
-                <Input type="text" disabled={true} value={this.props.viewCount}/>
-              </FormGroup>
-              <FormGroup>
-                <Label>View Book</Label>
-                <div style={{width: '100%', display: 'flex', alignItems: 'center'}}>
-                  <i className="icon-link icons" style={{marginRight: 10}}/>
-                  <a href={this.props.folderUrl} target="_blank">{this.props.folderUrl}</a>
-                </div>
-              </FormGroup>
-              {this.props.coverImage !== null ? (
-                <FormGroup>
-                  <Label>Cover Image</Label>
-                  <div style={{width: '100%', justifyContent: 'center'}}>
-                    <img src={this.props.coverImage} width={'100%'}/>
-                  </div>
-                </FormGroup>
-              ) : null}
 
             </CardBody>
           </Card>
