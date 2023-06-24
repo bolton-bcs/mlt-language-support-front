@@ -1,5 +1,19 @@
 import React, {Component} from 'react';
-import {Button, Card, CardBody, CardHeader, Col, FormGroup, Input, Label, ModalBody, Dropdown,DropdownItem,DropdownMenu,DropdownToggle} from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  FormGroup,
+  Input,
+  Label,
+  ModalBody,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle
+} from "reactstrap";
 import Dropzone from "react-dropzone";
 import "../Modal.scss"
 
@@ -8,19 +22,25 @@ function lettersChanges(str) {
 }
 
 class Model extends Component {
-  state={
+  state = {
     drop: true,
     src: null,
     imgBase64: '',
     asImageEdit: false,
-    dropdownOpen:false
+    dropdownOpen: false,
+  }
+
+  componentDidMount() {
+    if (this.props.editEnabled) {
+      this.setState({src: this.props.image})
+    }
   }
 
   handleDrop = acceptedFiles => {
     if (acceptedFiles && acceptedFiles.length > 0) {
       const reader = new FileReader();
       reader.addEventListener('load', () =>
-        this.setState({src: reader.result, drop: false,asImageEdit:true})
+        this.setState({src: reader.result, drop: false, asImageEdit: true})
       );
       reader.readAsDataURL(acceptedFiles[0]);
     }
@@ -30,20 +50,20 @@ class Model extends Component {
     if (e.target.files && e.target.files.length > 0) {
       const reader = new FileReader();
       reader.addEventListener('load', () =>
-        this.setState({src: reader.result, drop: false,asImageEdit:true})
+        this.setState({src: reader.result, drop: false, asImageEdit: true})
       );
       reader.readAsDataURL(e.target.files[0]);
     }
   };
 
   render() {
-    const {asImageEdit,drop,imgBase64,src,dropdownOpen}= this.state;
+    const {asImageEdit, drop, imgBase64, src, dropdownOpen} = this.state;
     return (
       <ModalBody>
         <Col xs="12" sm="12">
           <Card>
             <CardHeader>
-              <strong>Add Product</strong>
+              <strong>{!this.props.editEnabled?'Add Product':'Edit Product'}</strong>
             </CardHeader>
             <CardBody>
 
@@ -51,11 +71,16 @@ class Model extends Component {
                 <Col xs="6" className="mt-2">
 
                   {asImageEdit ?
-                    <div className={"EditableStyle"} onClick={() => this.setState({asImageEdit: false})}>
+                    <div className={"EditableStyle"} onClick={() => this.setState({asImageEdit: false, src: null})}>
                       <img src={src} alt="" width={'100%'} height={'100%'}/>
                       <i className="cui-cloud-upload icons font-2xl"></i>
                     </div>
                     :
+                    src ?
+                      <div className={"EditableStyle"} onClick={() => this.setState({asImageEdit: false , src: null})}>
+                        <img src={this.props.image} alt="img" width={'100%'} height={'100%'}/>
+                      </div>
+                      :
                     <div className={"App"}>
                       <Dropzone
                         onDrop={this.handleDrop}
@@ -96,7 +121,7 @@ class Model extends Component {
                 <Col xs="6">
                   <FormGroup>
                     <Label htmlFor="vat">Product Name</Label>
-                    <Input type="text" value={this.props.title}/>
+                    <Input type="text" value={this.props.productName}/>
                   </FormGroup>
                   <FormGroup>
                     <Label htmlFor="vat">Description</Label>
@@ -104,16 +129,12 @@ class Model extends Component {
                   </FormGroup>
                   <FormGroup>
                     <Label htmlFor="vat">Unit Price</Label>
-                    <Input type="text" value={this.props.title}/>
+                    <Input type="text" value={this.props.unitPrice}/>
                   </FormGroup>
                   <FormGroup>
                     <Label htmlFor="vat">Category</Label>
-                    <Input type="text" value={this.props.title}/>
-                  </FormGroup>
-                  <FormGroup>
-                    <Label htmlFor="vat">Category</Label>
-                    <Dropdown isOpen={dropdownOpen} toggle={()=>this.setState({dropdownOpen: !dropdownOpen})}>
-                      <DropdownToggle caret  className="w-100 text-left bg-white">Category</DropdownToggle>
+                    <Dropdown isOpen={dropdownOpen} toggle={() => this.setState({dropdownOpen: !dropdownOpen})}>
+                      <DropdownToggle caret className="w-100 text-left bg-white">Category</DropdownToggle>
                       <DropdownMenu>
                         <DropdownItem>Some Action1</DropdownItem>
                         <DropdownItem>Some Action2</DropdownItem>

@@ -17,6 +17,7 @@ import ModelContent from "../../components/Model/Books/Model";
 import Loader from "../../components/Loader/loading";
 import {StorageStrings} from "../../constance/StorageStrings";
 import swal from "sweetalert";
+import {AppSwitch} from "@coreui/react";
 
 let prev = 0;
 
@@ -29,11 +30,11 @@ class Product extends Component {
     list: [
       {
         productId: '1',
-        productName: 'items.title',
-        description: 'items.description',
-        status:'pending',
+        productName: 'Chilly Powder',
+        description: 'test description',
+        status: 'pending',
         unitPrice: '1200',
-        image:'items.image'
+        image: 'https://www.shutterstock.com/image-photo/red-chilly-powderchilly-powder-260nw-1713369340.jpg'
       }
     ],
     selectedPage: 1,
@@ -45,7 +46,8 @@ class Product extends Component {
     modelVisible: false,
     selectedProductData: {},
     loading: true,
-    asSearch: false
+    asSearch: false,
+    editEnabled:false
   }
 
   componentDidMount() {
@@ -160,23 +162,6 @@ class Product extends Component {
     //   })
   }
 
-  badgeStatusHandler(status) {
-    switch (status) {
-      case 'ACTIVE':
-        return {color: 'success', text: 'Inactive', title: 'INACTIVE'};
-        break;
-      case 'INACTIVE':
-        return {color: 'secondary', text: 'Active', title: 'ACTIVE'};
-        break;
-      case 'DELETED':
-        return {color: 'danger', text: '', title: ''};
-        break;
-      default:
-        return {color: '', text: '', title: ''}
-        break;
-    }
-  }
-
   onTextChange = (event) => {
     prev = new Date().getTime();
     let name = event.target.name;
@@ -206,24 +191,34 @@ class Product extends Component {
 
   }
 
-  onTogglePopup = (data) => {
+  onTogglePopup = (data,isEdit) => {
     localStorage.setItem(StorageStrings.BOOK_ID, data.productId);
-    this.setState({
-      modelVisible: !this.state.modelVisible,
-      selectedProductData: {
-        productId: data.productId,
-        title: data.productName,
-        author: data.author,
-        description: data.description,
-        language: data.language,
-        coverImage: data.coverImage,
-        folderUrl: data.folderUrl,
-        packages: data.packages,
-        viewCount: data.viewCount,
-        productType: this.checkProductCategory(data.productType),
-        grade:data.grade
-      }
-    })
+    this.setState({modelVisible: !this.state.modelVisible})
+    if(isEdit){
+      this.setState({
+        selectedProductData: {
+          productId: data.productId,
+          productName: data.productName,
+          description:data.description,
+          unitPrice:data.unitPrice,
+          image:data.image,
+        },
+        editEnabled: true
+      })
+    }else {
+      this.setState({
+        selectedProductData: {
+          productId: '',
+          productName: '',
+          description:'',
+          unitPrice:'',
+          image:'',
+        },
+        editEnabled: true
+      })
+      this.setState({editEnabled:false})
+    }
+
   }
 
   handleSelected(selectedPage) {
@@ -262,21 +257,19 @@ class Product extends Component {
   }
 
   render() {
-    const {totalElements, list, searchTxt, modelVisible, selectedProductData, loading} = this.state;
+    const {totalElements, list, searchTxt, modelVisible, selectedProductData, loading, editEnabled} = this.state;
 
     const listData = list.map((items, i) => (
       <tr key={i}>
         <td className={"DescriptionTD"}>{items.productName}</td>
         <td className={"DescriptionTD"}>{items.description}</td>
         <td className={'btn-align'}>{items.unitPrice}</td>
-        <td className={'btn-align'}>{items.image}</td>
+        <td className={'btn-align'}><a href={items.image} target="_blank"><i className="icon-picture"></i></a></td>
         <td className={'btn-align'}>
-          <Badge color={this.badgeStatusHandler(items.status).color} className={"shadow"}>{items.status}</Badge>
+          <AppSwitch variant={'pill'} label color={'success'} size={'sm'}/>
         </td>
         <td className={'btn-align'}>
-          <Link to={{pathname: BASE_URL + "/manage-product/add-new-product", state: {asEdit: true, items: items}}}>
-            <Button color="dark" className="btn-pill shadow">Edit</Button>
-          </Link>
+            <Button color="dark" className="btn-pill shadow" onClick={()=>this.onTogglePopup(items,true)}>Edit</Button>
           <Button color="danger" className="btn-pill shadow"
                   onClick={() => this.deleteHandler(items.productId, 'DELETED')}>Delete</Button>
         </td>
@@ -295,13 +288,15 @@ class Product extends Component {
                       <Input type="text" name="searchTxt" placeholder="Search..." value={searchTxt.value}/>
                       <InputGroupAddon addonType="append">
                         <Button type="button" color="primary" className={"shadow"}
-                                onClick={() =>{}}>Search</Button>
+                                onClick={() => {
+                                }}>Search</Button>
                       </InputGroupAddon>
                     </InputGroup>
                   </Col>
 
                   <div style={{position: 'absolute', right: 30}}>
-                      <Button color="primary mr-2" className="btn-pill shadow" onClick={this.onTogglePopup}>Add New</Button>
+                    <Button color="primary mr-2" className="btn-pill shadow" onClick={this.onTogglePopup}>Add
+                      New</Button>
                     <Button color="primary" className="btn-pill shadow">Export CSV</Button>
                   </div>
 
@@ -329,22 +324,18 @@ class Product extends Component {
         </Row>
         <Modal isOpen={modelVisible} toggle={this.onTogglePopup}
                className={'modal-lg ' + this.props.className}>
-          <ModalHeader toggle={this.onTogglePopup}>Product Details</ModalHeader>
+          <ModalHeader toggle={this.onTogglePopup}>{editEnabled?'Edit Product':'Add Product'}</ModalHeader>
           <ModelContent
-            title={'selectedProductData.title'}
-            author={'selectedProductData.author'}
-            description={'selectedProductData.description'}
-            language={'selectedProductData.language'}
-            coverImage={'selectedProductData.coverImage'}
-            packages={'selectedProductData.packages'}
-            folderUrl={'selectedProductData.folderUrl'}
-            viewCount={'selectedProductData.viewCount'}
-            bookType={'selectedProductData.bookType'}
-            grade={'selectedProductData.grade'}
+            productId={selectedProductData.productId}
+            productName={selectedProductData.productName}
+            description={selectedProductData.description}
+            image={selectedProductData.image}
+            unitPrice={selectedProductData.unitPrice}
+            editEnabled={editEnabled}
           />
           <ModalFooter>
             <Button color="secondary" onClick={this.onTogglePopup}>Cancel</Button>
-            <Button color="primary" onClick={this.onTogglePopup}>Add</Button>
+            <Button color="primary" onClick={this.onTogglePopup}>{editEnabled?'Edit':'Add'}</Button>
           </ModalFooter>
         </Modal>
 
