@@ -1,10 +1,22 @@
 import React, {Component} from 'react';
 import {
-  Badge, Button,
+  Badge,
+  Button,
   Card,
   CardBody,
   CardHeader,
-  Col, Input, InputGroup, InputGroupAddon, Modal, ModalFooter, ModalHeader,
+  Col,
+  Dropdown, DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  FormGroup,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  Label,
+  Modal, ModalBody,
+  ModalFooter,
+  ModalHeader,
   Row,
   Table
 } from "reactstrap";
@@ -13,17 +25,11 @@ import {BASE_URL} from "../../constance/Constance";
 import './Product.scss';
 import * as ProductService from '../../services/product';
 import * as CommonFunc from '../../utils/CommonFunc';
-import ModelContent from "../../components/Model/Books/Model";
 import Loader from "../../components/Loader/loading";
 import {StorageStrings} from "../../constance/StorageStrings";
 import swal from "sweetalert";
 import {AppSwitch} from "@coreui/react";
-
-let prev = 0;
-
-function lettersChanges(str) {
-  return str.replace(/(\B)[^ ]*/g, match => (match.toLowerCase())).replace(/^[^ ]/g, match => (match.toUpperCase()))
-}
+import Dropzone from "react-dropzone";
 
 class Product extends Component {
   state = {
@@ -34,7 +40,8 @@ class Product extends Component {
         description: 'test description',
         status: 'pending',
         unitPrice: '1200',
-        image: 'https://www.shutterstock.com/image-photo/red-chilly-powderchilly-powder-260nw-1713369340.jpg'
+        image: 'https://www.shutterstock.com/image-photo/red-chilly-powderchilly-powder-260nw-1713369340.jpg',
+        category: 'category2'
       }
     ],
     selectedPage: 1,
@@ -44,10 +51,25 @@ class Product extends Component {
       valid: true
     },
     modelVisible: false,
-    selectedProductData: {},
     loading: true,
     asSearch: false,
-    editEnabled:false
+    editEnabled: false,
+
+    drop: true,
+    src: null,
+    imgBase64: '',
+    asImageEdit: false,
+    dropdownOpen: false,
+    productName: '',
+    description: '',
+    unitPrice: '',
+    selectedCategory: '',
+    category: [
+      {label: 'category 1', value: 'category1'},
+      {label: 'category 2', value: 'category2'},
+      {label: 'category 3', value: 'category3'},
+      {label: 'category 4', value: 'category4'},
+    ],
   }
 
   componentDidMount() {
@@ -163,60 +185,38 @@ class Product extends Component {
   }
 
   onTextChange = (event) => {
-    prev = new Date().getTime();
     let name = event.target.name;
-    let item = this.state[name];
-    if (item.value !== event.target.value) {
-      this.setState({list: []});
-    }
-    item.value = event.target.value;
-    item.valid = true;
     this.setState({
-      [name]: item,
+      [name]: event.target.value,
     });
-
-    if (event.target.value !== '') {
-      this.setState({asSearch: true});
-    } else {
-      this.setState({asSearch: false});
-    }
-
-    setTimeout(() => {
-      let now = new Date().getTime();
-      if (now - prev >= 1000) {
-        prev = now;
-        this.searchProductByName(0, 10)
-      }
-    }, 1000)
-
   }
 
-  onTogglePopup = (data,isEdit) => {
+  onTogglePopup = (data, isEdit) => {
     localStorage.setItem(StorageStrings.BOOK_ID, data.productId);
     this.setState({modelVisible: !this.state.modelVisible})
-    if(isEdit){
+    if (isEdit) {
       this.setState({
-        selectedProductData: {
-          productId: data.productId,
-          productName: data.productName,
-          description:data.description,
-          unitPrice:data.unitPrice,
-          image:data.image,
-        },
-        editEnabled: true
+        productId: data.productId,
+        productName: data.productName,
+        description: data.description,
+        unitPrice: data.unitPrice,
+        image: data.image,
+        selectedCategory: data.category,
+        editEnabled: true,
+        src: data.image
       })
-    }else {
+    } else {
       this.setState({
-        selectedProductData: {
-          productId: '',
-          productName: '',
-          description:'',
-          unitPrice:'',
-          image:'',
-        },
-        editEnabled: true
+        productId: '',
+        productName: '',
+        description: '',
+        unitPrice: '',
+        image: '',
+        selectedCategory: '',
+        src: null,
+        editEnabled: false
       })
-      this.setState({editEnabled:false})
+      this.setState({editEnabled: false})
     }
 
   }
@@ -256,8 +256,28 @@ class Product extends Component {
     }
   }
 
+  handleDrop = acceptedFiles => {
+    if (acceptedFiles && acceptedFiles.length > 0) {
+      const reader = new FileReader();
+      reader.addEventListener('load', () =>
+        this.setState({src: reader.result, drop: false, asImageEdit: true})
+      );
+      reader.readAsDataURL(acceptedFiles[0]);
+    }
+  }
+
+  onSelectFile = e => {
+    if (e.target.files && e.target.files.length > 0) {
+      const reader = new FileReader();
+      reader.addEventListener('load', () =>
+        this.setState({src: reader.result, drop: false, asImageEdit: true})
+      );
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
   render() {
-    const {totalElements, list, searchTxt, modelVisible, selectedProductData, loading, editEnabled} = this.state;
+    const {totalElements, list, searchTxt, modelVisible, loading, editEnabled, asImageEdit, asSearch, drop, dropdownOpen, imgBase64, selectedPage, src, selectedCategory, category, description, productName, unitPrice} = this.state;
 
     const listData = list.map((items, i) => (
       <tr key={i}>
@@ -269,7 +289,7 @@ class Product extends Component {
           <AppSwitch variant={'pill'} label color={'success'} size={'sm'}/>
         </td>
         <td className={'btn-align'}>
-            <Button color="dark" className="btn-pill shadow" onClick={()=>this.onTogglePopup(items,true)}>Edit</Button>
+          <Button color="dark" className="btn-pill shadow" onClick={() => this.onTogglePopup(items, true)}>Edit</Button>
           <Button color="danger" className="btn-pill shadow"
                   onClick={() => this.deleteHandler(items.productId, 'DELETED')}>Delete</Button>
         </td>
@@ -324,25 +344,112 @@ class Product extends Component {
         </Row>
         <Modal isOpen={modelVisible} toggle={this.onTogglePopup}
                className={'modal-lg ' + this.props.className}>
-          <ModalHeader toggle={this.onTogglePopup}>{editEnabled?'Edit Product':'Add Product'}</ModalHeader>
-          <ModelContent
-            productId={selectedProductData.productId}
-            productName={selectedProductData.productName}
-            description={selectedProductData.description}
-            image={selectedProductData.image}
-            unitPrice={selectedProductData.unitPrice}
-            editEnabled={editEnabled}
-          />
+          <ModalHeader toggle={this.onTogglePopup}>{editEnabled ? 'Edit Product' : 'Add Product'}</ModalHeader>
+
+          <ModalBody>
+            <Col xs="12" sm="12">
+              <Card>
+                <CardHeader>
+                  <strong>{!editEnabled ? 'Add Product' : 'Edit Product'}</strong>
+                </CardHeader>
+                <CardBody>
+
+                  <FormGroup row className="my-0">
+                    <Col xs="6" className="mt-2">
+
+                      {asImageEdit ?
+                        <div className={"EditableStyle"} onClick={() => this.setState({asImageEdit: false, src: null})}>
+                          <img src={src} alt="" width={'100%'} height={'100%'}/>
+                          <i className="cui-cloud-upload icons font-2xl"></i>
+                        </div>
+                        :
+                        src ?
+                          <div className={"EditableStyle"}
+                               onClick={() => this.setState({asImageEdit: false, src: null})}>
+                            <img src={src} alt="img" width={'100%'} height={'100%'}/>
+                          </div>
+                          :
+                          <div className={"App"}>
+                            <Dropzone
+                              onDrop={this.handleDrop}
+                              accept="image/*"
+                              minSize={1024}
+                              maxSize={3072000}
+                            >
+                              {({
+                                  getRootProps,
+                                  getInputProps,
+                                  isDragActive,
+                                  isDragAccept,
+                                  isDragReject
+                                }) => {
+                                const additionalClass = isDragAccept
+                                  ? "accept"
+                                  : isDragReject
+                                    ? "reject"
+                                    : "";
+
+                                return (
+                                  <div
+                                    {...getRootProps({
+                                      className: `dropzone ${additionalClass}`
+                                    })}
+                                  >
+                                    <input {...getInputProps()} onChange={this.onSelectFile}/>
+                                    <span>{isDragActive ? "📂" : "📁"}</span>
+                                    <p>Drag'n'drop images</p>
+                                  </div>
+                                );
+                              }}
+                            </Dropzone>
+                          </div>
+                      }
+
+                    </Col>
+                    <Col xs="6">
+                      <FormGroup>
+                        <Label htmlFor="vat">Product Name</Label>
+                        <Input type="text" name="productName" placeholder="Product Name" value={productName}
+                               onChange={this.onTextChange}/>
+                      </FormGroup>
+                      <FormGroup>
+                        <Label htmlFor="vat">Description</Label>
+                        <Input type="textarea" name="description" placeholder="Description" value={description}
+                               onChange={this.onTextChange}/>
+                      </FormGroup>
+                      <FormGroup>
+                        <Label htmlFor="vat">Unit Price</Label>
+                        <Input type="text" name="unitPrice" placeholder="Unit Price" value={unitPrice}
+                               onChange={this.onTextChange}/>
+                      </FormGroup>
+                      <FormGroup>
+                        <Label htmlFor="vat">Category</Label>
+                        <Input type="select" name="selectedCategory" onChange={this.onTextChange}>
+                          <option value="" disabled={selectedCategory !== ""}>Please select category</option>
+                          {category.map(item => (
+                            <option value={item.value} selected={item.value === selectedCategory}>{item.label}</option>
+                          ))}
+                        </Input>
+                      </FormGroup>
+                    </Col>
+                  </FormGroup>
+
+                </CardBody>
+              </Card>
+            </Col>
+          </ModalBody>
+
           <ModalFooter>
             <Button color="secondary" onClick={this.onTogglePopup}>Cancel</Button>
-            <Button color="primary" onClick={this.onTogglePopup}>{editEnabled?'Edit':'Add'}</Button>
+            <Button color="primary" onClick={this.onTogglePopup}>{editEnabled ? 'Edit' : 'Add'}</Button>
           </ModalFooter>
         </Modal>
 
-        <Loader
-          asLoading={loading}
-        />
-
+        {loading && (
+          <Loader
+            asLoading={loading}
+          />
+        )}
       </div>
     );
   }
