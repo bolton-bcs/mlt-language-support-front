@@ -15,14 +15,9 @@ import {
 import './ProductRequest.scss';
 import * as PublicUserService from '../../services/users';
 import * as CommonFunc from "../../utils/CommonFunc";
-import VerifyIMG from '../../assets/img/icon/verified.jpg';
-import NotVerifyIMG from '../../assets/img/icon/notVerified.jpg';
-import ModelContent from "../../components/Model/PublicUser/Model";
-import userImg from '../../assets/img/brand/user.jpg';
 import Loader from "../../components/Loader/loading";
 import {DateRangePickerComponent} from '@syncfusion/ej2-react-calendars';
 import swal from "sweetalert";
-import CloseIMG from '../../assets/img/icon/close.png'
 
 let prev = 0;
 
@@ -496,24 +491,9 @@ class ProductRequest extends Component {
             </Card>
           </Col>
         </Row>
-        <Modal isOpen={modelVisible} toggle={this.onTogglePopup}
-               className={'modal-lg ' + this.props.className}>
-          <ModalHeader toggle={this.onTogglePopup}>Public User Details</ModalHeader>
-          <ModelContent
-            // firstName={selectedUserData.firstName}
-            // lastName={selectedUserData.lastName}
-            // contact={selectedUserData.contact}
-            userId={selectedUserData.userId}
-          />
-          <ModalFooter>
-            <Button color="secondary" onClick={this.onTogglePopup}>Cancel</Button>
-          </ModalFooter>
-        </Modal>
-
         <Loader
           asLoading={loading}
         />
-
       </div>
     );
   }
