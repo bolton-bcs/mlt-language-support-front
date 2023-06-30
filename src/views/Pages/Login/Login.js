@@ -24,73 +24,44 @@ import Loader from "../../../components/Loader/loading";
 
 class Login extends Component {
   state = {
-    userName: {
-      value: '',
-      valid: false
-    },
-    password: {
-      value: '',
-      valid: false
-    },
+    email: '',
+    password: '',
     loading: false
   }
 
-  loginHandler = async () => {
-    // let{userName,password}=this.state;
-    // const obj = {
-    //   username:userName.value,
-    //   password:password.value,
-    //   grant_type:'password',
-    //   user_type:'ADMIN'
-    // }
-    // this.setState({loading:true});
-    // await authService.loginUser(qs.stringify(obj))
-    //   .then(response=>{
-    //     if (response.access_token){
-    //       Cookies.set(StorageStrings.ACCESS_TOKEN,response.access_token);
-    //       localStorage.setItem(StorageStrings.ACCESS_TOKEN,response.access_token);
-    //       Cookies.set(StorageStrings.REFRESH_TOKEN,response.refresh_token);
-    //       localStorage.setItem(StorageStrings.REFRESH_TOKEN,response.refresh_token);
-    //       localStorage.setItem(StorageStrings.USER_NAME,userName.value);
-    //       localStorage.setItem(StorageStrings.USERID,response.user.id.toString());
-    //       localStorage.setItem(StorageStrings.LOGGED,'true');
-    //       this.setState({loading:false})
-    //       this.props.history.push(BASE_URL+'/dashboard');
-    //       return ;
-    //     }
-    //     if (!response.success){
-    //       CommonFunc.notifyMessage(response.message,response.status);
-    //       this.setState({loading: false});
-    //     }
-    //   })
-    //   .catch(error=>{
-    //     CommonFunc.notifyMessage(error.message, error.status);
-    //     this.setState({loading: false});
-    //   })
-    Cookies.set(StorageStrings.ACCESS_TOKEN, 'response.access_token');
-    localStorage.setItem(StorageStrings.ACCESS_TOKEN, 'response.access_token');
-    Cookies.set(StorageStrings.REFRESH_TOKEN, 'response.refresh_token');
-    localStorage.setItem(StorageStrings.REFRESH_TOKEN, 'response.refresh_token');
-    localStorage.setItem(StorageStrings.USER_NAME, 'userName.value');
-    localStorage.setItem(StorageStrings.USERID, '1');
-    localStorage.setItem(StorageStrings.LOGGED, 'true');
-    this.setState({loading: false})
-    this.props.history.push(BASE_URL + '/manage-products');
+  loginUser=async ()=>{
+    const obj = {
+      email:this.state.email,
+      password:this.state.password
+    }
+    await authService.loginUser(obj)
+      .then(res=>{
+        console.log('login response::::::::::::::',res)
+        if (res.success){
+          localStorage.setItem(StorageStrings.ACCESS_TOKEN, res.access_token);
+          localStorage.setItem(StorageStrings.REFRESH_TOKEN, res.refresh_token);
+          localStorage.setItem(StorageStrings.LOGGED, 'true');
+          this.props.history.push(BASE_URL + '/manage-products');
+        }else {
+          CommonFunc.notifyMessage(res.message,res.status);
+        }
+        this.setState({loading: false})
+      })
+      .catch(err=>{
+        this.setState({loading: false})
+        console.log(err)
+      })
   }
 
   onTextChange = (event) => {
-    console.log(event)
-    // let name = event.target.name;
-    // let item = this.state[name];
-    // item.value = event.target.value;
-    // item.valid = true;
-    // this.setState({
-    //   [name]: item,
-    // });
+    let name = event.target.name;
+    this.setState({
+      [name]: event.target.value,
+    });
   }
 
   render() {
-    let {userName, password} = this.state;
+    let {email, password} = this.state;
     return (
       <div className="app flex-row align-items-center auth-bg">
         <Container>
@@ -99,15 +70,15 @@ class Login extends Component {
               <h2>Login</h2>
               <form className="login-form">
                 <label htmlFor="email">email</label>
-                <input value={userName.value} onChange={(e) => {
+                <input value={email} onChange={(e) => {
                   this.onTextChange(e)
                 }} type="email" placeholder="youremail@gmail.com" id="email" name="email"/>
                 <label htmlFor="password">password</label>
-                <input value={password.value} onChange={(e) => {
+                <input value={password} onChange={(e) => {
                   this.onTextChange(e)
                 }} type="password" placeholder="********" id="password" name="password"/>
-                <button type="submit" className="button-auth" onClick={async () => {
-                  await this.loginHandler()
+                <button type="button" className="button-auth" onClick={async () => {
+                  await this.loginUser()
                 }}>Log In
                 </button>
               </form>

@@ -32,15 +32,43 @@ class Register extends Component {
   }
 
   handleSubmit = async(e) => {
+    this.setState({loading: true})
     const obj = {
       email:this.state.email,
       password: this.state.password
     }
     await authService.registerUser(obj)
       .then(res=>{
-        console.log(res)
+        console.log('register response ::::::::::',res)
+        if (res.success){
+          this.loginUser(obj)
+        }else {
+          this.setState({loading: false})
+          CommonFunc.notifyMessage(res.message,res.status);
+        }
       })
       .catch(err=>{
+        this.setState({loading: false})
+        console.log(err)
+      })
+  }
+
+  loginUser=async (obj)=>{
+    await authService.loginUser(obj)
+      .then(res=>{
+        console.log('login response::::::::::::::',res)
+        if (res.success){
+          localStorage.setItem(StorageStrings.ACCESS_TOKEN, res.access_token);
+          localStorage.setItem(StorageStrings.REFRESH_TOKEN, res.refresh_token);
+          localStorage.setItem(StorageStrings.LOGGED, 'true');
+          this.props.history.push(BASE_URL + '/manage-products');
+        }else {
+          CommonFunc.notifyMessage(res.message,res.status);
+        }
+        this.setState({loading: false})
+      })
+      .catch(err=>{
+        this.setState({loading: false})
         console.log(err)
       })
   }
