@@ -20,6 +20,9 @@ export const callApi = async (apiObject) => {
     body = apiObject.body ? apiObject.body : {};
   }
 
+  console.log(method)
+  console.log(body)
+
   headers = {
     'Content-Type': apiObject.urlencoded ? 'application/x-www-form-urlencoded' : apiObject.multipart ? 'multipart/form-data' : 'application/json',
   };
