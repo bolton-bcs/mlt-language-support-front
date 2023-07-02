@@ -33,17 +33,7 @@ import Dropzone from "react-dropzone";
 
 class Product extends Component {
   state = {
-    list: [
-      {
-        productId: '1',
-        productName: 'Chilly Powder',
-        description: 'test description',
-        status: 'pending',
-        unitPrice: '1200',
-        image: 'https://www.shutterstock.com/image-photo/red-chilly-powderchilly-powder-260nw-1713369340.jpg',
-        category: 'category2'
-      }
-    ],
+    list: [],
     selectedPage: 1,
     totalElements: 0,
     searchTxt: {
