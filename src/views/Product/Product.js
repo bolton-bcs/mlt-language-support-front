@@ -74,47 +74,43 @@ class Product extends Component {
 
   componentDidMount() {
     this.handleSelected = this.handleSelected.bind(this);
-    this.getAllProducts(0, 10);
+    this.getAllProducts();
   }
 
-  getAllProducts = async (page, size) => {
+  getAllProducts = async () => {
     // this.setState({loading: true})
     this.setState({
       loading: false,
 
     })
-    // await ProductService.getAllBooks({page: page, size: size})
-    //   .then(response => {
-    //     let list = [];
-    //
-    //     if (response.success) {
-    //       response.body.content.map((items) => {
-    //         list.push({
-    //           bookId: items.bookId,
-    //           bookName: items.title,
-    //           author: items.author,
-    //           description: items.description,
-    //           folderUrl: items.folderURL,
-    //           coverImage: items.coverImage,
-    //           packages: items.packages,
-    //           language: items.language,
-    //           status: items.bookStatus,
-    //           viewCount: items.viewCount,
-    //           bookType: items.bookType ? items.bookType : '______',
-    //           grade:items.grade
-    //         })
-    //       });
-    //       const totalElements = response.body.totalElements;
-    //       this.setState({list: list, selectedElement: page, totalElements: totalElements, loading: false});
-    //     } else {
-    //       CommonFunc.notifyMessage(response.message);
-    //       this.setState({loading: false});
-    //     }
-    //   })
-    //   .catch(error => {
-    //     CommonFunc.notifyMessage(error.message, error.status);
-    //     this.setState({loading: false});
-    //   })
+    await ProductService.getAllProduct()
+      .then(response => {
+        let list = [];
+
+        if (response.success) {
+
+          response.data.map((items) => {
+            list.push({
+              productId: items.id,
+              productName: items.name,
+              description: items.description,
+              status: items.status,
+              unitPrice: items.price,
+              image: items.imageUrl,
+              category: 'category2',
+              qty:items.qty
+            })
+          });
+          this.setState({list: list, loading: false});
+        } else {
+          CommonFunc.notifyMessage(response.message);
+          this.setState({loading: false});
+        }
+      })
+      .catch(error => {
+        CommonFunc.notifyMessage(error.message, error.status);
+        this.setState({loading: false});
+      })
   }
 
   searchProductByName = async (page, size) => {
@@ -221,6 +217,25 @@ class Product extends Component {
 
   }
 
+  onSaveProduct=async ()=>{
+    const data={
+      name: this.state.productName,
+      description: this.state.description,
+      imageUrl: this.state.src,
+      price: this.state.unitPrice,
+      qty: 15,
+      status: 1
+    }
+    await ProductService.saveProduct(data)
+      .then(res=>{
+        console.log(res)
+        this.onTogglePopup()
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+  }
+
   handleSelected(selectedPage) {
     if (!this.state.asSearch) {
       this.getAllProducts(selectedPage - 1, 10)
@@ -286,7 +301,7 @@ class Product extends Component {
         <td className={'btn-align'}>{items.unitPrice}</td>
         <td className={'btn-align'}><a href={items.image} target="_blank"><i className="icon-picture"></i></a></td>
         <td className={'btn-align'}>
-          <AppSwitch variant={'pill'} label color={'success'} size={'sm'}/>
+          <AppSwitch variant={'pill'} label color={'success'} size={'sm'} checked={items.status}/>
         </td>
         <td className={'btn-align'}>
           <Button color="dark" className="btn-pill shadow" onClick={() => this.onTogglePopup(items, true)}>Edit</Button>
@@ -441,7 +456,7 @@ class Product extends Component {
 
           <ModalFooter>
             <Button color="secondary" onClick={this.onTogglePopup}>Cancel</Button>
-            <Button color="primary" onClick={this.onTogglePopup}>{editEnabled ? 'Edit' : 'Add'}</Button>
+            <Button color="primary" onClick={this.onSaveProduct}>{editEnabled ? 'Edit' : 'Add'}</Button>
           </ModalFooter>
         </Modal>
 

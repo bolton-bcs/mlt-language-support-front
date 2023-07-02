@@ -38,8 +38,8 @@ class Login extends Component {
       .then(res=>{
         console.log('login response::::::::::::::',res)
         if (res.success){
-          localStorage.setItem(StorageStrings.ACCESS_TOKEN, res.access_token);
-          localStorage.setItem(StorageStrings.REFRESH_TOKEN, res.refresh_token);
+          localStorage.setItem(StorageStrings.ACCESS_TOKEN, res.data.access_token);
+          localStorage.setItem(StorageStrings.REFRESH_TOKEN, res.data.refresh_token);
           localStorage.setItem(StorageStrings.LOGGED, 'true');
           this.props.history.push(BASE_URL + '/manage-products');
         }else {

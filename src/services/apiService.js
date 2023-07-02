@@ -36,8 +36,9 @@ export const callApi = async (apiObject) => {
 
   const url = `${apiConfig.serverUrl}/${apiConfig.basePath}/${apiObject.endpoint}`;
   let result;
+  console.log(method)
 
-  await axios[method](url, method !== 'get' ? body : {headers: headers}, {headers: headers})
+  await axios[method](url, method !== 'get' ? body : {headers:headers,data:null}, {headers:headers})
     .then(async response => {
       if (!response.data.success) {
         let code = response.data.code;
@@ -47,7 +48,7 @@ export const callApi = async (apiObject) => {
           window.location = constants.BASE_URL + '/login';
         }
       }
-      result = await {...response.data, status: response.data.message === 'Success' ? 1 : 0, success: response.data.message === 'Success'};
+      result = await {...response.data, status: response.data.message === 'Success' || response.data.message === 'OK' ? 1 : 0, success: response.data.message === 'Success' || response.data.message === 'OK'};
     })
     .catch(async error => {
 

@@ -1,24 +1,25 @@
 import ApiService from './apiService';
 
-export async function getAllBooks(pagination) {
+export async function getAllProduct() {
   const apiObject = {};
   apiObject.method = 'GET';
   apiObject.authentication = true;
   apiObject.isBasicAuth = false;
   apiObject.urlencoded = false;
-  apiObject.endpoint = `web/admin/book/all?page=${pagination.page}&size=${pagination.size}`;
+  apiObject.endpoint = `product/get-all`;
+  apiObject.multipart = false;
   apiObject.body = null;
   return await ApiService.callApi(apiObject);
 }
 
-export async function saveBook(body) {
+export async function saveProduct(body) {
   const apiObject = {};
   apiObject.method = 'POST';
   apiObject.authentication = true;
   apiObject.isBasicAuth = false;
   apiObject.urlencoded = false;
-  apiObject.endpoint = `web/admin/book/save`;
-  apiObject.multipart = true;
+  apiObject.endpoint = `product/create`;
+  apiObject.multipart = false;
   apiObject.body = body;
   return await ApiService.callApi(apiObject);
 }
