@@ -60,10 +60,13 @@ class Product extends Component {
     imgBase64: '',
     asImageEdit: false,
     dropdownOpen: false,
+    productId: '',
     productName: '',
     description: '',
     unitPrice: '',
     selectedCategory: '',
+    qty: 0,
+    status: false,
     category: [
       {label: 'category 1', value: 'category1'},
       {label: 'category 2', value: 'category2'},
@@ -73,7 +76,6 @@ class Product extends Component {
   }
 
   componentDidMount() {
-    this.handleSelected = this.handleSelected.bind(this);
     this.getAllProducts();
   }
 
@@ -98,7 +100,7 @@ class Product extends Component {
               unitPrice: items.price,
               image: items.imageUrl,
               category: 'category2',
-              qty:items.qty
+              qty: items.qty
             })
           });
           this.setState({list: list, loading: false});
@@ -188,7 +190,6 @@ class Product extends Component {
   }
 
   onTogglePopup = (data, isEdit) => {
-    localStorage.setItem(StorageStrings.BOOK_ID, data.productId);
     this.setState({modelVisible: !this.state.modelVisible})
     if (isEdit) {
       this.setState({
@@ -199,7 +200,9 @@ class Product extends Component {
         image: data.image,
         selectedCategory: data.category,
         editEnabled: true,
-        src: data.image
+        src: data.image,
+        qty: data.qty,
+        status: data.status
       })
     } else {
       this.setState({
@@ -210,15 +213,18 @@ class Product extends Component {
         image: '',
         selectedCategory: '',
         src: null,
-        editEnabled: false
+        editEnabled: false,
+        qty: 0,
+        status: false
       })
       this.setState({editEnabled: false})
     }
 
   }
 
-  onSaveProduct=async ()=>{
-    const data={
+  onSaveProduct = async () => {
+    this.setState({loading: true})
+    const data = {
       name: this.state.productName,
       description: this.state.description,
       imageUrl: this.state.src,
@@ -227,24 +233,20 @@ class Product extends Component {
       status: 1
     }
     await ProductService.saveProduct(data)
-      .then(res=>{
-        console.log(res)
-        this.onTogglePopup()
+      .then(res => {
+        if (res.success) {
+          this.onTogglePopup()
+          this.getAllProducts()
+        } else {
+          CommonFunc.notifyMessage(res.message);
+        }
       })
-      .catch(err=>{
+      .catch(err => {
         console.log(err)
       })
   }
 
-  handleSelected(selectedPage) {
-    if (!this.state.asSearch) {
-      this.getAllProducts(selectedPage - 1, 10)
-    } else {
-      this.searchProductByName(selectedPage - 1, 10)
-    }
-  }
-
-  async deleteHandler(productId, status) {
+  async deleteHandler(id) {
     swal({
       title: "Are you sure?",
       text: "Are you sure you want to delete this product?",
@@ -255,20 +257,48 @@ class Product extends Component {
     })
       .then((willDelete) => {
         if (willDelete) {
-          this.updateProductStatus(productId, status);
+          this.onDeleteProduct(id)
         }
       });
   }
 
-  checkProductCategory(type) {
-    switch (type) {
-      case 'EDUCATIONAL_BOOK':
-        return 'Educational Book';
-      case 'STORY_BOOK':
-        return 'Story Book';
-      default:
-        return '______'
+  onUpdateProduct = async () => {
+    const data = {
+      id: this.state.productId,
+      name: this.state.productName,
+      description: this.state.description,
+      imageUrl: this.state.src,
+      price: this.state.unitPrice,
+      qty: this.state.qty,
+      status: this.state.status ? 1 : 0
     }
+    await ProductService.updateProduct(data)
+      .then(res => {
+        if (res.success) {
+          this.onTogglePopup()
+          this.getAllProducts()
+        } else {
+          CommonFunc.notifyMessage(res.message,0);
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  onDeleteProduct=async (id)=>{
+    await ProductService.deleteProduct(id)
+      .then(res => {
+        if (res.success) {
+          CommonFunc.notifyMessage('Product has been deleted!',1);
+          this.getAllProducts()
+        } else {
+          CommonFunc.notifyMessage(res.message,0);
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   handleDrop = acceptedFiles => {
@@ -306,7 +336,7 @@ class Product extends Component {
         <td className={'btn-align'}>
           <Button color="dark" className="btn-pill shadow" onClick={() => this.onTogglePopup(items, true)}>Edit</Button>
           <Button color="danger" className="btn-pill shadow"
-                  onClick={() => this.deleteHandler(items.productId, 'DELETED')}>Delete</Button>
+                  onClick={() => this.deleteHandler(items.productId)}>Delete</Button>
         </td>
       </tr>
     ));
@@ -456,7 +486,8 @@ class Product extends Component {
 
           <ModalFooter>
             <Button color="secondary" onClick={this.onTogglePopup}>Cancel</Button>
-            <Button color="primary" onClick={this.onSaveProduct}>{editEnabled ? 'Edit' : 'Add'}</Button>
+            <Button color="primary"
+                    onClick={!editEnabled ? this.onSaveProduct : this.onUpdateProduct}>{editEnabled ? 'Edit' : 'Add'}</Button>
           </ModalFooter>
         </Modal>
 

@@ -24,37 +24,26 @@ export async function saveProduct(body) {
   return await ApiService.callApi(apiObject);
 }
 
-export async function updateBook(body) {
+export async function updateProduct(body) {
   const apiObject = {};
   apiObject.method = 'PUT';
   apiObject.authentication = true;
   apiObject.isBasicAuth = false;
   apiObject.urlencoded = false;
-  apiObject.endpoint = `web/admin/book/update`;
-  apiObject.multipart = true;
+  apiObject.endpoint = `product/update`;
+  apiObject.multipart = false;
   apiObject.body = body;
   return await ApiService.callApi(apiObject);
 }
 
-export async function searchBook(pagination) {
+export async function deleteProduct(id) {
   const apiObject = {};
-  apiObject.method = 'GET';
-  apiObject.authentication = true;
-  apiObject.isBasicAuth = false;
-  apiObject.urlencoded = false;
-  apiObject.endpoint = `web/admin/book/search?page=${pagination.page}&size=${pagination.size}&name=${pagination.name}`;
-  apiObject.body = null;
-  return await ApiService.callApi(apiObject);
-}
-
-export async function getBookCount() {
-  const apiObject = {};
-  apiObject.method = 'GET';
+  apiObject.method = 'DELETE';
   apiObject.authentication = true;
   apiObject.isBasicAuth = false;
   apiObject.urlencoded = false;
   apiObject.multipart = false;
-  apiObject.endpoint = `web/admin/book/count`;
+  apiObject.endpoint = `product/delete/${id}`;
   apiObject.body = null;
   return await ApiService.callApi(apiObject);
 }
