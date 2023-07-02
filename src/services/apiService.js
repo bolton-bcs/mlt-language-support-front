@@ -38,7 +38,7 @@ export const callApi = async (apiObject) => {
   let result;
   console.log(method)
 
-  await axios[method](url, method !== 'get' ? body : {headers:headers,data:null}, {headers:headers})
+  await axios[method](url, method !== 'get' && method !== 'delete' ? body : {headers:headers,data:null}, {headers:headers})
     .then(async response => {
       if (!response.data.success) {
         let code = response.data.code;
