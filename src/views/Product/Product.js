@@ -262,20 +262,38 @@ class Product extends Component {
       });
   }
 
-  onUpdateProduct = async () => {
-    const data = {
-      id: this.state.productId,
-      name: this.state.productName,
-      description: this.state.description,
-      imageUrl: this.state.src,
-      price: this.state.unitPrice,
-      qty: this.state.qty,
-      status: this.state.status ? 1 : 0
+  onUpdateProduct = async (item,type) => {
+    console.log(item)
+    let data = {}
+
+    if (type === 'STATUS'){
+      data = {
+        id: item.productId,
+        name: item.productName,
+        description: item.description,
+        imageUrl: item.image,
+        price: item.unitPrice,
+        qty: item.qty,
+        status: !item.status ? 1 : 0
+      }
+    }else {
+      data = {
+        id: this.state.productId,
+        name: this.state.productName,
+        description: this.state.description,
+        imageUrl: this.state.src,
+        price: this.state.unitPrice,
+        qty: this.state.qty,
+        status: this.state.status ? 1 : 0
+      }
     }
     await ProductService.updateProduct(data)
       .then(res => {
         if (res.success) {
-          this.onTogglePopup()
+          if (type === undefined){
+            this.onTogglePopup()
+          }
+          CommonFunc.notifyMessage('Product record has been updated!',1);
           this.getAllProducts()
         } else {
           CommonFunc.notifyMessage(res.message,0);
@@ -331,7 +349,7 @@ class Product extends Component {
         <td className={'btn-align'}>{items.unitPrice}</td>
         <td className={'btn-align'}><a href={items.image} target="_blank"><i className="icon-picture"></i></a></td>
         <td className={'btn-align'}>
-          <AppSwitch variant={'pill'} label color={'success'} size={'sm'} checked={items.status}/>
+          <AppSwitch variant={'pill'} label color={'success'} size={'sm'} checked={items.status} onChange={()=>this.onUpdateProduct(items,'STATUS')}/>
         </td>
         <td className={'btn-align'}>
           <Button color="dark" className="btn-pill shadow" onClick={() => this.onTogglePopup(items, true)}>Edit</Button>
