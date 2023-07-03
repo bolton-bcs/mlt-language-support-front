@@ -61,7 +61,13 @@ class Register extends Component {
           localStorage.setItem(StorageStrings.ACCESS_TOKEN, res.access_token);
           localStorage.setItem(StorageStrings.REFRESH_TOKEN, res.refresh_token);
           localStorage.setItem(StorageStrings.LOGGED, 'true');
-          this.props.history.push(BASE_URL + '/manage-products');
+          if (this.state.email === 'admin'){
+            localStorage.setItem(StorageStrings.USER_TYPE, 'ADMIN');
+            this.props.history.push(BASE_URL + '/manage-products');
+          }else {
+            localStorage.setItem(StorageStrings.USER_TYPE, 'PUBLIC_USER');
+            this.props.history.push(BASE_URL + '/product-details');
+          }
         }else {
           CommonFunc.notifyMessage(res.message,res.status);
         }

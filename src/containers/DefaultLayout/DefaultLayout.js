@@ -27,7 +27,7 @@ const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 
 class DefaultLayout extends Component {
   state = {
-    name: ''
+    name: '',
   }
 
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
@@ -38,7 +38,6 @@ class DefaultLayout extends Component {
   }
 
   componentDidMount() {
-    localStorage.setItem(StorageStrings.USER_TYPE, 'ADMIN');
     if (localStorage.getItem(StorageStrings.LOGGED) !== 'true') {
       this.props.history.push(BASE_URL + '/login')
     }
@@ -51,25 +50,33 @@ class DefaultLayout extends Component {
     const {name} = this.state;
     return (
       <div className="app">
-        <AppHeader fixed>
-          <Suspense fallback={this.loading()}>
-            <DefaultHeader onLogout={e => this.signOut(e)}/>
-          </Suspense>
-        </AppHeader>
-        <div className="app-body">
-          <AppSidebar fixed display="lg">
-            <AppSidebarHeader/>
-            <AppSidebarForm/>
-            <Suspense>
-
-              <AppSidebarNav navConfig={navigation} {...this.props} />
-
+        {localStorage.getItem(StorageStrings.USER_TYPE) === 'ADMIN' && (
+          <AppHeader fixed>
+            <Suspense fallback={this.loading()}>
+              <DefaultHeader onLogout={e => this.signOut(e)}/>
             </Suspense>
-            <AppSidebarFooter/>
-            <AppSidebarMinimizer/>
-          </AppSidebar>
+          </AppHeader>
+        )}
+
+        <div className="app-body">
+          {localStorage.getItem(StorageStrings.USER_TYPE)==='ADMIN' && (
+            <AppSidebar fixed display="lg">
+              <AppSidebarHeader/>
+              <AppSidebarForm/>
+              <Suspense>
+
+                <AppSidebarNav navConfig={navigation} {...this.props} />
+
+              </Suspense>
+              <AppSidebarFooter/>
+              <AppSidebarMinimizer/>
+            </AppSidebar>
+          )}
+
           <main className="main">
-            <AppBreadcrumb appRoutes={routes}/>
+            {localStorage.getItem(StorageStrings.USER_TYPE)==='ADMIN' && (
+              <AppBreadcrumb appRoutes={routes}/>
+            )}
             <Container fluid>
               <Suspense fallback={this.loading()}>
                 <Switch>
@@ -96,11 +103,13 @@ class DefaultLayout extends Component {
             </Suspense>
           </AppAside>
         </div>
-        <AppFooter>
-          <Suspense fallback={this.loading()}>
-            <DefaultFooter/>
-          </Suspense>
-        </AppFooter>
+        {localStorage.getItem(StorageStrings.USER_TYPE)==='ADMIN' && (
+          <AppFooter>
+            <Suspense fallback={this.loading()}>
+              <DefaultFooter/>
+            </Suspense>
+          </AppFooter>
+        )}
       </div>
     );
   }
