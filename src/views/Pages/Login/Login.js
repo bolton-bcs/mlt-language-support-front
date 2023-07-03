@@ -75,7 +75,7 @@ class Login extends Component {
     localStorage.setItem(StorageStrings.USERID, '1');
     localStorage.setItem(StorageStrings.LOGGED, 'true');
     this.setState({loading: false})
-    this.props.history.push(BASE_URL + '/manage-products');
+    this.props.history.push(BASE_URL + '/product-details');
   }
 
   onTextChange = (event) => {
