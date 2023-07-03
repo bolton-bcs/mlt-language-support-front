@@ -9,6 +9,7 @@ const Register = React.lazy(() => import('./views/Pages/Register/Register'));
 const ErrorPage =React.lazy(() => import('./views/Pages/Page404/Page404'));
 const ErrorPage1 =React.lazy(() => import('./views/Pages/Page500/Page500'));
 const ProductRequest = React.lazy(() => import('./views/ProductRequest/ProductRequest'));
+const UserProductDetails = React.lazy(() => import('./views/PublicUser/ProductDetails/ProductDetails'));
 
 
 const routes = [
@@ -19,6 +20,7 @@ const routes = [
   {path: BASE_URL + '/404', exact: true, name: '404 Page', component: ErrorPage},
   {path: BASE_URL + '/500', exact: true, name: '500 Page', component: ErrorPage1},
   {path: BASE_URL + '/manage-product-request', exact: true, name: 'Manage Product Request', component: ProductRequest},
+  {path: BASE_URL + '/product-details', exact: true, name: 'Manage Product Details', component: UserProductDetails},
 ];
 
 export default routes;
