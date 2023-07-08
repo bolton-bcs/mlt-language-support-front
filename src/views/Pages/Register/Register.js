@@ -58,15 +58,17 @@ class Register extends Component {
       .then(res=>{
         console.log('login response::::::::::::::',res)
         if (res.success){
-          localStorage.setItem(StorageStrings.ACCESS_TOKEN, res.access_token);
-          localStorage.setItem(StorageStrings.REFRESH_TOKEN, res.refresh_token);
+          localStorage.setItem(StorageStrings.ACCESS_TOKEN, res.data.access_token);
+          Cookies.set(StorageStrings.ACCESS_TOKEN, res.data.access_token);
+          localStorage.setItem(StorageStrings.REFRESH_TOKEN, res.data.refresh_token);
+          Cookies.set(StorageStrings.REFRESH_TOKEN, res.data.refresh_token);
           localStorage.setItem(StorageStrings.LOGGED, 'true');
-          if (this.state.email === 'admin'){
-            localStorage.setItem(StorageStrings.USER_TYPE, 'ADMIN');
+          localStorage.setItem(StorageStrings.USER_TYPE,res.data.role);
+          if (res.data.role !== 'ROLE_USER'){
             this.props.history.push(BASE_URL + '/manage-products');
           }else {
-            localStorage.setItem(StorageStrings.USER_TYPE, 'PUBLIC_USER');
-            this.props.history.push(BASE_URL + '/product-details');
+            window.location = BASE_URL +  '/product-catalogue'
+            // this.props.history.push(BASE_URL + '/product-catalogue');
           }
         }else {
           CommonFunc.notifyMessage(res.message,res.status);
@@ -96,9 +98,9 @@ class Register extends Component {
                        placeholder="********" id="password" name="password"/>
                 <button type="button" className="button-auth" onClick={this.handleSubmit}>Sign Up</button>
               </form>
-              {/*<Link to={BASE_URL + "/login"}>*/}
-              {/*  <button className="link-btn">Already have an account? Login here.</button>*/}
-              {/*</Link>*/}
+              <Link to={BASE_URL + "/login"}>
+                <button className="link-btn">Already have an account? Login here.</button>
+              </Link>
             </Col>
           </Row>
         </Container>

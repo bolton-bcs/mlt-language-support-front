@@ -60,7 +60,7 @@ class DefaultLayout extends Component {
 
 
         <div className="app-body">
-          {localStorage.getItem(StorageStrings.USER_TYPE)==='ADMIN' && (
+          {localStorage.getItem(StorageStrings.USER_TYPE)==='ROLE_ADMIN' && (
             <AppSidebar fixed display="lg">
               <AppSidebarHeader/>
               <AppSidebarForm/>
@@ -75,7 +75,7 @@ class DefaultLayout extends Component {
           )}
 
           <main className="main">
-            {localStorage.getItem(StorageStrings.USER_TYPE)==='ADMIN' && (
+            {localStorage.getItem(StorageStrings.USER_TYPE)==='ROLE_ADMIN' && (
               <AppBreadcrumb appRoutes={routes}/>
             )}
             <Container fluid>
@@ -104,7 +104,7 @@ class DefaultLayout extends Component {
             </Suspense>
           </AppAside>
         </div>
-        {localStorage.getItem(StorageStrings.USER_TYPE)==='ADMIN' && (
+        {localStorage.getItem(StorageStrings.USER_TYPE)==='ROLE_ADMIN' && (
           <AppFooter>
             <Suspense fallback={this.loading()}>
               <DefaultFooter/>

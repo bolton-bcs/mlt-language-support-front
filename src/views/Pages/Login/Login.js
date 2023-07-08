@@ -39,14 +39,16 @@ class Login extends Component {
         console.log('login response::::::::::::::',res)
         if (res.success){
           localStorage.setItem(StorageStrings.ACCESS_TOKEN, res.data.access_token);
+          Cookies.set(StorageStrings.ACCESS_TOKEN, res.data.access_token);
           localStorage.setItem(StorageStrings.REFRESH_TOKEN, res.data.refresh_token);
+          Cookies.set(StorageStrings.REFRESH_TOKEN, res.data.refresh_token);
           localStorage.setItem(StorageStrings.LOGGED, 'true');
-          if (this.state.email.toLowerCase() === 'admin'){
-            localStorage.setItem(StorageStrings.USER_TYPE, 'ADMIN');
+          localStorage.setItem(StorageStrings.USER_TYPE,res.data.role);
+          if (res.data.role !== 'ROLE_USER'){
             this.props.history.push(BASE_URL + '/manage-products');
           }else {
-            localStorage.setItem(StorageStrings.USER_TYPE, 'PUBLIC_USER');
-            this.props.history.push(BASE_URL + '/product-catalogue');
+            window.location = BASE_URL +  '/product-catalogue'
+            // this.props.history.push(BASE_URL + '/product-catalogue');
           }
         }else {
           CommonFunc.notifyMessage(res.message,res.status);
