@@ -215,7 +215,7 @@ class Product extends Component {
         imageUrl: item.image,
         price: item.unitPrice,
         qty: item.qty,
-        status: !item.status ? 1 : 0,
+        status: !item.status,
         categoryId:item.categoryId
       }
     }else {
