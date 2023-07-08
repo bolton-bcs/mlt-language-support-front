@@ -57,16 +57,33 @@ class Product extends Component {
     selectedCategory: '',
     qty: 0,
     status: false,
-    category: [
-      {label: 'category 1', value: 'category1'},
-      {label: 'category 2', value: 'category2'},
-      {label: 'category 3', value: 'category3'},
-      {label: 'category 4', value: 'category4'},
-    ],
+    category: [],
   }
 
   componentDidMount() {
     this.getAllProducts();
+    this.getAllCategories();
+  }
+
+  getAllCategories=async()=>{
+    await ProductService.getAllCategory()
+      .then(response=>{
+        let list = [];
+        if (response.success){
+          response.data.map((items) => {
+            list.push({
+              label:items.name,
+              value:items.id
+            })
+          })
+          this.setState({category:list})
+        }else {
+
+        }
+      })
+      .catch(err=>{
+
+      })
   }
 
   getAllProducts = async () => {
@@ -89,7 +106,7 @@ class Product extends Component {
               status: items.status,
               unitPrice: items.price,
               image: items.imageUrl,
-              category: 'category2',
+              category: items.categoryId,
               qty: items.qty
             })
           });
@@ -153,7 +170,8 @@ class Product extends Component {
       imageUrl: this.state.src,
       price: this.state.unitPrice,
       qty: 15,
-      status: 1
+      status: true,
+      categoryId:this.state.selectedCategory
     }
     await ProductService.saveProduct(data)
       .then(res => {
@@ -197,7 +215,8 @@ class Product extends Component {
         imageUrl: item.image,
         price: item.unitPrice,
         qty: item.qty,
-        status: !item.status ? 1 : 0
+        status: !item.status ? 1 : 0,
+        categoryId:item.categoryId
       }
     }else {
       data = {
@@ -207,7 +226,8 @@ class Product extends Component {
         imageUrl: this.state.src,
         price: this.state.unitPrice,
         qty: this.state.qty,
-        status: this.state.status ? 1 : 0
+        status: this.state.status ? 1 : 0,
+        categoryId:this.state.selectedCategory
       }
     }
     await ProductService.updateProduct(data)

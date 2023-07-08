@@ -48,6 +48,18 @@ export async function deleteProduct(id) {
   return await ApiService.callApi(apiObject);
 }
 
+export async function getAllCategory() {
+  const apiObject = {};
+  apiObject.method = 'GET';
+  apiObject.authentication = true;
+  apiObject.isBasicAuth = false;
+  apiObject.urlencoded = false;
+  apiObject.endpoint = `category/get-all`;
+  apiObject.multipart = false;
+  apiObject.body = null;
+  return await ApiService.callApi(apiObject);
+}
+
 export async function updateBookStatus(body){
   const apiObject = {};
   apiObject.method = 'PUT';
