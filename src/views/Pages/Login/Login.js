@@ -85,7 +85,10 @@ class Login extends Component {
                 <input value={password} onChange={(e) => {
                   this.onTextChange(e)
                 }} type="password" placeholder="********" id="password" name="password"/>
-                <button type="button" className="button-auth" onClick={async () => {
+                <Link to={BASE_URL + "/forgot-password"}>
+                  <button className="forgot-btn-link">Forgot your password?</button>
+                </Link>
+                <button type="button" className="button-auth mt-2" onClick={async () => {
                   await this.loginUser()
                 }}>Log In
                 </button>

@@ -34,6 +34,11 @@ const Register = Loadable({
   loading
 })
 
+const ForgotPW = Loadable({
+  loader: () => import('./views/Pages/ForgotPW'),
+  loading
+})
+
 class App extends Component {
   render() {
     return (
@@ -41,6 +46,7 @@ class App extends Component {
           <Switch>
             <Route exact path={BASE_URL+"/login"} name="Login Page" component={Login} />
             <Route exact path={BASE_URL+"/register"} name="Register Page" component={Register} />
+            <Route exact path={BASE_URL+"/forgot-password"} name="Forgot Password Page" component={ForgotPW} />
             <Route exact path={BASE_URL+"/404"} name="Page 404" component={Page404} />
             <Route exact path={BASE_URL+"/500"} name="Page 500" component={Page500} />
             <Route path={"/"} name="Home" component={DefaultLayout} />

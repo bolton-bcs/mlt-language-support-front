@@ -11,6 +11,7 @@ const ErrorPage1 =React.lazy(() => import('./views/Pages/Page500/Page500'));
 const ProductRequest = React.lazy(() => import('./views/ProductRequest/ProductRequest'));
 const UserProductDetails = React.lazy(() => import('./views/PublicUser/ProductDetails/ProductDetails'));
 const UserProductCatalogue = React.lazy(() => import('./views/PublicUser/ProductCatalogue/ProductCatalogue'));
+const ForgotPWPage = React.lazy(() => import('./views/Pages/ForgotPW/ForgotPW'));
 
 
 const routes = [
@@ -23,6 +24,7 @@ const routes = [
   {path: BASE_URL + '/manage-product-request', exact: true, name: 'Manage Product Request', component: ProductRequest},
   {path: BASE_URL + '/product-details', exact: true, name: 'Manage Product Details', component: UserProductDetails},
   {path: BASE_URL + '/product-catalogue', exact: true, name: 'Manage Product catalogue', component: UserProductCatalogue},
+  {path: BASE_URL + '/forgot-password', exact: true, name: 'Forgot Password Page', component: ForgotPWPage},
 ];
 
 export default routes;

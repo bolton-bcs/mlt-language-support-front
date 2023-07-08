@@ -38,14 +38,27 @@ export async function renewToken(token) {
   return await ApiService.callApi(apiObject);
 }
 
-export async function changePassword(body){
+export async function updatePassword(body){
   const apiObject = {};
-  apiObject.method = 'PUT';
-  apiObject.authentication = true;
+  apiObject.method = 'POST';
+  apiObject.authentication = false;
   apiObject.isBasicAuth = false;
   apiObject.urlencoded = false;
-  apiObject.endpoint = `web/admin/profile/password`;
+  apiObject.endpoint = `auth/update-password`;
   apiObject.multipart = false;
   apiObject.body = body;
   return await ApiService.callApi(apiObject);
+}
+
+export async function forgotPassword(userCredentials){
+  const apiObject={};
+  apiObject.method = 'POST';
+  apiObject.authentication = false;
+  apiObject.isBasicAuth = false;
+  apiObject.urlencoded = false;
+  apiObject.endpoint = 'auth/forgot-password';
+  apiObject.body = userCredentials;
+  apiObject.state = "login";
+
+  return await ApiService.callApi(apiObject)
 }
