@@ -34,6 +34,7 @@ class DefaultLayout extends Component {
 
   signOut(e) {
     e.preventDefault()
+    localStorage.clear();
     this.props.history.push(BASE_URL + '/login')
   }
 
@@ -50,13 +51,13 @@ class DefaultLayout extends Component {
     const {name} = this.state;
     return (
       <div className="app">
-        {localStorage.getItem(StorageStrings.USER_TYPE) === 'ADMIN' && (
+
           <AppHeader fixed>
             <Suspense fallback={this.loading()}>
               <DefaultHeader onLogout={e => this.signOut(e)}/>
             </Suspense>
           </AppHeader>
-        )}
+
 
         <div className="app-body">
           {localStorage.getItem(StorageStrings.USER_TYPE)==='ADMIN' && (

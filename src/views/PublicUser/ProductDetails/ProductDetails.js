@@ -2,7 +2,7 @@
 import React from 'react';
 import productImage from '../../../assets/img/icon/img.jpg';
 import './ProductDetails.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const ProductDetails = () => {
@@ -12,12 +12,12 @@ const ProductDetails = () => {
             <div className="pview">
             <div className="row">
                 <div className="col-md-6">
-                    <img src={productImage} alt="Product Image" className="img-fluid" />
+                    <img src={'https://c8.alamy.com/comp/2CBHG1K/red-chilli-powder-with-dried-red-chillies-in-earthen-bowl-2CBHG1K.jpg'} alt="Product Image" className="img-fluid" />
                 </div>
                 <div className="col-md-6">
                     <div className="product-details">
-                        <h2 className="product-name">Product Name</h2>
-                        <p className="unit-price">Featuring a sleek and timeless design, this bag is made from high-quality materials, ensuring durability and longevity. Its spacious interior offers ample room to carry all your essentials, from your wallet and phone to your cosmetics and even a small tablet. With multiple compartments and pockets, you can effortlessly organize your belongings and find them whenever you need them.</p>
+                        <h2 className="product-name">Chilli Powder</h2>
+                        <p className="unit-price">Chili powder is a red-colored blend of powdered spices. While it contains some cayenne pepper for heat, it also has spices such as cumin, garlic powder, oregano, and paprika intended to lend the flavors expected in chili con carne. The ratio is one part cayenne to seven parts other spices, depending on the blend.</p>
                         <p className="unit-price">RS(Per Unit): 21999.99</p>
                     </div>
                   <form className='fm'>

@@ -9,6 +9,7 @@ import Admin from '../../assets/img/brand/admin.png';
 import * as CommonFunc from '../../utils/CommonFunc';
 import swal from "sweetalert";
 import * as constants from "../../constance/Constance";
+import {StorageStrings} from "../../constance/StorageStrings";
 
 const propTypes = {
   children: PropTypes.node,
@@ -46,10 +47,13 @@ class DefaultHeader extends Component {
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile/>
         <AppNavbarBrand
-          full={{src: logo, width: 89, height: 25, alt: 'CoreUI Logo'}}
+          full={{src: logo, width: 135, height: 63, alt: 'CoreUI Logo'}}
           minimized={{src: logo, width: 30, height: 30, alt: 'CoreUI Logo'}}
         />
-        <AppSidebarToggler className="d-md-down-none" display="lg"/>
+
+        {localStorage.getItem(StorageStrings.USER_TYPE)==='ADMIN' && (
+          <AppSidebarToggler className="d-md-down-none" display="lg"/>
+        )}
 
         <Nav className="d-md-down-none" navbar>
         </Nav>

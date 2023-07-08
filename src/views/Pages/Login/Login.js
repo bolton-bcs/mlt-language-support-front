@@ -46,7 +46,7 @@ class Login extends Component {
             this.props.history.push(BASE_URL + '/manage-products');
           }else {
             localStorage.setItem(StorageStrings.USER_TYPE, 'PUBLIC_USER');
-            this.props.history.push(BASE_URL + '/product-details');
+            this.props.history.push(BASE_URL + '/product-catalogue');
           }
         }else {
           CommonFunc.notifyMessage(res.message,res.status);
