@@ -42,7 +42,7 @@ class Product extends Component {
       valid: true
     },
     modelVisible: false,
-    loading: true,
+    loading: false,
     asSearch: false,
     editEnabled: false,
 
@@ -61,9 +61,9 @@ class Product extends Component {
     category: [],
   }
 
-  componentDidMount() {
-    this.getAllProducts();
-    this.getAllCategories();
+  async componentDidMount() {
+    await this.getAllCategories();
+    await this.getAllProducts();
   }
 
   getAllCategories = async () => {
@@ -79,20 +79,17 @@ class Product extends Component {
           })
           this.setState({category: list})
         } else {
-
+          CommonFunc.notifyMessage(response.message);
         }
       })
       .catch(err => {
-
+       console.log(err)
       })
   }
 
   getAllProducts = async () => {
-    // this.setState({loading: true})
-    this.setState({
-      loading: false,
 
-    })
+    this.setState({loading: true})
     await ProductService.getAllProduct()
       .then(response => {
         let list = [];

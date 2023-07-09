@@ -60,14 +60,14 @@ export async function getAllCategory() {
   return await ApiService.callApi(apiObject);
 }
 
-export async function updateBookStatus(body){
+export async function getAllProductRequest(){
   const apiObject = {};
-  apiObject.method = 'PUT';
+  apiObject.method = 'GET';
   apiObject.authentication = true;
   apiObject.isBasicAuth = false;
   apiObject.urlencoded = false;
   apiObject.multipart = false;
-  apiObject.endpoint = `web/admin/book/update/status`;
-  apiObject.body = body;
+  apiObject.endpoint = `orders/pending`;
+  apiObject.body = null;
   return await ApiService.callApi(apiObject);
 }
