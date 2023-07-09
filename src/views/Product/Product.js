@@ -30,6 +30,7 @@ import {StorageStrings} from "../../constance/StorageStrings";
 import swal from "sweetalert";
 import {AppSwitch} from "@coreui/react";
 import Dropzone from "react-dropzone";
+import * as Validations from "../../validation/Validation";
 
 class Product extends Component {
   state = {
@@ -65,23 +66,23 @@ class Product extends Component {
     this.getAllCategories();
   }
 
-  getAllCategories=async()=>{
+  getAllCategories = async () => {
     await ProductService.getAllCategory()
-      .then(response=>{
+      .then(response => {
         let list = [];
-        if (response.success){
+        if (response.success) {
           response.data.map((items) => {
             list.push({
-              label:items.name,
-              value:items.id
+              label: items.name,
+              value: items.id
             })
           })
-          this.setState({category:list})
-        }else {
+          this.setState({category: list})
+        } else {
 
         }
       })
-      .catch(err=>{
+      .catch(err => {
 
       })
   }
@@ -163,28 +164,47 @@ class Product extends Component {
   }
 
   onSaveProduct = async () => {
-    this.setState({loading: true})
-    const data = {
-      name: this.state.productName,
-      description: this.state.description,
-      imageUrl: this.state.src,
-      price: this.state.unitPrice,
-      qty: 15,
-      status: true,
-      categoryId:this.state.selectedCategory
+
+    if (!Validations.textFieldValidator(this.state.productName, 1)) {
+      CommonFunc.notifyMessage('Please enter product name', 0);
+    }else if (!Validations.textFieldValidator(this.state.description, 1)){
+      CommonFunc.notifyMessage('Please enter product description', 0);
+    }else if (!Validations.numberValidator(this.state.unitPrice)){
+      CommonFunc.notifyMessage('Please enter valid price', 0);
+    }else if (!Validations.textFieldValidator(this.state.description, 1)){
+      CommonFunc.notifyMessage('Please enter product description', 0);
+    }else if (!Validations.textFieldValidator(this.state.description, 1)){
+      CommonFunc.notifyMessage('Please enter product description', 0);
+    }else if (this.state.selectedCategory.length === 0){
+      CommonFunc.notifyMessage('Please select category', 0);
+    }else {
+      this.setState({loading: true})
+      const data = {
+        name: this.state.productName,
+        description: this.state.description,
+        imageUrl: this.state.src,
+        price: this.state.unitPrice,
+        qty: 15,
+        status: true,
+        categoryId: this.state.selectedCategory
+      }
+      await ProductService.saveProduct(data)
+        .then(res => {
+          if (res.success) {
+            this.onTogglePopup()
+            this.getAllProducts()
+          } else {
+            CommonFunc.notifyMessage(res.message);
+            this.setState({loading: false})
+          }
+        })
+        .catch(err => {
+          console.log(err)
+          this.setState({loading: false})
+        })
     }
-    await ProductService.saveProduct(data)
-      .then(res => {
-        if (res.success) {
-          this.onTogglePopup()
-          this.getAllProducts()
-        } else {
-          CommonFunc.notifyMessage(res.message);
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
+
+
   }
 
   async deleteHandler(id) {
@@ -203,62 +223,84 @@ class Product extends Component {
       });
   }
 
-  onUpdateProduct = async (item,type) => {
-    console.log(item)
-    let data = {}
+  onUpdateProduct = async (item, type) => {
 
-    if (type === 'STATUS'){
-      data = {
-        id: item.productId,
-        name: item.productName,
-        description: item.description,
-        imageUrl: item.image,
-        price: item.unitPrice,
-        qty: item.qty,
-        status: !item.status,
-        categoryId:item.categoryId
-      }
+    if (!Validations.textFieldValidator(this.state.productName.trim(), 1)) {
+      CommonFunc.notifyMessage('Please enter product name', 0);
+    }else if (!Validations.textFieldValidator(this.state.description.trim(), 1)){
+      CommonFunc.notifyMessage('Please enter product description', 0);
+    }else if (!Validations.numberValidator(this.state.unitPrice.toString())){
+      CommonFunc.notifyMessage('Please enter valid price', 0);
+    }else if (!Validations.textFieldValidator(this.state.description.trim(), 1)){
+      CommonFunc.notifyMessage('Please enter product description', 0);
+    }else if (!Validations.textFieldValidator(this.state.description.trim(), 1)){
+      CommonFunc.notifyMessage('Please enter product description', 0);
+    }else if (this.state.selectedCategory.length === 0){
+      CommonFunc.notifyMessage('Please select category', 0);
     }else {
-      data = {
-        id: this.state.productId,
-        name: this.state.productName,
-        description: this.state.description,
-        imageUrl: this.state.src,
-        price: this.state.unitPrice,
-        qty: this.state.qty,
-        status: this.state.status ? 1 : 0,
-        categoryId:this.state.selectedCategory
-      }
-    }
-    await ProductService.updateProduct(data)
-      .then(res => {
-        if (res.success) {
-          if (type === undefined){
-            this.onTogglePopup()
-          }
-          CommonFunc.notifyMessage('Product record has been updated!',1);
-          this.getAllProducts()
-        } else {
-          CommonFunc.notifyMessage(res.message,0);
+      let data = {}
+
+      if (type === 'STATUS') {
+        data = {
+          id: item.productId,
+          name: item.productName,
+          description: item.description,
+          imageUrl: item.image,
+          price: item.unitPrice,
+          qty: item.qty,
+          status: !item.status,
+          categoryId: item.categoryId
         }
-      })
-      .catch(err => {
-        console.log(err)
-      })
+      } else {
+        data = {
+          id: this.state.productId,
+          name: this.state.productName,
+          description: this.state.description,
+          imageUrl: this.state.src,
+          price: this.state.unitPrice,
+          qty: this.state.qty,
+          status: this.state.status ? 1 : 0,
+          categoryId: this.state.selectedCategory
+        }
+      }
+      this.setState({loading: true})
+      await ProductService.updateProduct(data)
+        .then(res => {
+          if (res.success) {
+            if (type === undefined) {
+              this.onTogglePopup()
+            }
+            CommonFunc.notifyMessage('Product record has been updated!', 1);
+            this.getAllProducts()
+          } else {
+            CommonFunc.notifyMessage(res.message, 0);
+            this.setState({loading: false})
+          }
+        })
+        .catch(err => {
+          console.log(err)
+          this.setState({loading: false})
+        })
+    }
+
+
   }
 
-  onDeleteProduct=async (id)=>{
+  onDeleteProduct = async (id) => {
+    this.setState({loading: true})
     await ProductService.deleteProduct(id)
       .then(res => {
         if (res.success) {
-          CommonFunc.notifyMessage('Product has been deleted!',1);
+          CommonFunc.notifyMessage('Product has been deleted!', 1);
           this.getAllProducts()
         } else {
-          CommonFunc.notifyMessage(res.message,0);
+          CommonFunc.notifyMessage(res.message, 0);
+          this.setState({loading: false})
         }
       })
       .catch(err => {
         console.log(err)
+        this.setState({loading: false})
       })
   }
 
@@ -292,7 +334,8 @@ class Product extends Component {
         <td className={'btn-align'}>{items.unitPrice}</td>
         <td className={'btn-align'}><a href={items.image} target="_blank"><i className="icon-picture"></i></a></td>
         <td className={'btn-align'}>
-          <AppSwitch variant={'pill'} label color={'success'} size={'sm'} checked={items.status} onChange={()=>this.onUpdateProduct(items,'STATUS')}/>
+          <AppSwitch variant={'pill'} label color={'success'} size={'sm'} checked={items.status}
+                     onChange={() => this.onUpdateProduct(items, 'STATUS')}/>
         </td>
         <td className={'btn-align'}>
           <Button color="dark" className="btn-pill shadow" onClick={() => this.onTogglePopup(items, true)}>Edit</Button>
@@ -335,7 +378,7 @@ class Product extends Component {
                   <tr>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Unit Price</th>
+                    <th>Unit Price (LKR)</th>
                     <th>Image</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -425,7 +468,7 @@ class Product extends Component {
                       </FormGroup>
                       <FormGroup>
                         <Label htmlFor="vat">Unit Price</Label>
-                        <Input type="text" name="unitPrice" placeholder="Unit Price" value={unitPrice}
+                        <Input type="number" name="unitPrice" placeholder="Unit Price" value={unitPrice}
                                onChange={this.onTextChange}/>
                       </FormGroup>
                       <FormGroup>

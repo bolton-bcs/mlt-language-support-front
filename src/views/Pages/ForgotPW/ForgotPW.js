@@ -21,6 +21,7 @@ import Cookies from "js-cookie";
 import {StorageStrings} from '../../../constance/StorageStrings';
 import * as CommonFunc from '../../../utils/CommonFunc';
 import Loader from "../../../components/Loader/loading";
+import * as Validations from "../../../validation/Validation";
 
 class ForgotPW extends Component {
   state = {
@@ -71,49 +72,64 @@ class ForgotPW extends Component {
   }
 
   forgotPassword = async () => {
-    this.setState({loading: true})
 
-    const data = {
-      email: this.state.email
-    }
-    await authService.forgotPassword(data)
-      .then(res => {
-        if (res.success) {
-          this.setState({verifyBtnVisible: false, loading: false});
-          CommonFunc.notifyMessage('Email sent successfully!', 1);
-        }else {
+    if (!Validations.emailValidator(this.state.email, 1)) {
+      CommonFunc.notifyMessage('Please enter valid email address', 0);
+    }else {
+      this.setState({loading: true})
+
+      const data = {
+        email: this.state.email
+      }
+      await authService.forgotPassword(data)
+        .then(res => {
+          if (res.success) {
+            this.setState({verifyBtnVisible: false, loading: false});
+            CommonFunc.notifyMessage('Email sent successfully!', 1);
+          }else {
+            this.setState({loading: false})
+            CommonFunc.notifyMessage(res.message, res.status);
+          }
+        })
+        .catch(err => {
           this.setState({loading: false})
-          CommonFunc.notifyMessage(res.message, res.status);
-        }
-      })
-      .catch(err => {
-        this.setState({loading: false})
-        console.log(err)
-      })
+          console.log(err)
+        })
+    }
+
   }
 
   updatePassword = async () => {
-    this.setState({loading: true})
 
-    const data = {
-      token:this.state.token,
-      password:this.state.password
-    }
-    await authService.updatePassword(data)
-      .then(res => {
-        if (res.success) {
-          this.setState({loading: false});
-          CommonFunc.notifyMessage('Password update successfully!', 1);
-          this.loginUser();
-        }else {
+    if (!Validations.textFieldValidator(this.state.password, 1)) {
+      CommonFunc.notifyMessage('Please enter password', 0);
+    }else if (!Validations.textFieldValidator(this.state.token, 1)) {
+      CommonFunc.notifyMessage('Please enter valid token', 0);
+    }else {
+      this.setState({loading: true})
+
+      const data = {
+        token:this.state.token,
+        password:this.state.password
+      }
+      await authService.updatePassword(data)
+        .then(res => {
+          if (res.success) {
+            this.setState({loading: false});
+            CommonFunc.notifyMessage('Password update successfully!', 1);
+            this.loginUser();
+          }else {
+            this.setState({loading: false})
+            CommonFunc.notifyMessage(res.message, res.status);
+          }
+        })
+        .catch(err => {
           this.setState({loading: false})
-          CommonFunc.notifyMessage(res.message, res.status);
-        }
-      })
-      .catch(err => {
-        this.setState({loading: false})
-        console.log(err)
-      })
+          console.log(err)
+        })
+    }
+
+
   }
 
   render() {

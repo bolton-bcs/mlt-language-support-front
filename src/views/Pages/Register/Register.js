@@ -12,6 +12,7 @@ import Cookies from "js-cookie";
 import {StorageStrings} from '../../../constance/StorageStrings';
 import * as CommonFunc from '../../../utils/CommonFunc';
 import Loader from "../../../components/Loader/loading";
+import * as Validations from "../../../validation/Validation";
 
 class Register extends Component {
   state = {
@@ -32,25 +33,31 @@ class Register extends Component {
   }
 
   handleSubmit = async(e) => {
-    this.setState({loading: true})
-    const obj = {
-      email:this.state.email,
-      password: this.state.password
-    }
-    await authService.registerUser(obj)
-      .then(res=>{
-        console.log('register response ::::::::::',res)
-        if (res.success){
-          this.loginUser(obj)
-        }else {
+    if (!Validations.textFieldValidator(this.state.email, 1)) {
+      CommonFunc.notifyMessage('Please enter valid email address', 0);
+    }else if (!Validations.textFieldValidator(this.state.password, 1)) {
+      CommonFunc.notifyMessage('Please enter password', 0);
+    }else {
+      this.setState({loading: true})
+      const obj = {
+        email:this.state.email,
+        password: this.state.password
+      }
+      await authService.registerUser(obj)
+        .then(res=>{
+          console.log('register response ::::::::::',res)
+          if (res.success){
+            this.loginUser(obj)
+          }else {
+            this.setState({loading: false})
+            CommonFunc.notifyMessage(res.message,res.status);
+          }
+        })
+        .catch(err=>{
           this.setState({loading: false})
-          CommonFunc.notifyMessage(res.message,res.status);
-        }
-      })
-      .catch(err=>{
-        this.setState({loading: false})
-        console.log(err)
-      })
+          console.log(err)
+        })
+    }
   }
 
   loginUser=async (obj)=>{

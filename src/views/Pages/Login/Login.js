@@ -21,6 +21,7 @@ import Cookies from "js-cookie";
 import {StorageStrings} from '../../../constance/StorageStrings';
 import * as CommonFunc from '../../../utils/CommonFunc';
 import Loader from "../../../components/Loader/loading";
+import * as Validations from "../../../validation/Validation";
 
 class Login extends Component {
   state = {
@@ -30,35 +31,42 @@ class Login extends Component {
   }
 
   loginUser=async ()=>{
-    const obj = {
-      email:this.state.email,
-      password:this.state.password
-    }
-    await authService.loginUser(obj)
-      .then(res=>{
-        console.log('login response::::::::::::::',res)
-        if (res.success){
-          localStorage.setItem(StorageStrings.ACCESS_TOKEN, res.data.access_token);
-          Cookies.set(StorageStrings.ACCESS_TOKEN, res.data.access_token);
-          localStorage.setItem(StorageStrings.REFRESH_TOKEN, res.data.refresh_token);
-          Cookies.set(StorageStrings.REFRESH_TOKEN, res.data.refresh_token);
-          localStorage.setItem(StorageStrings.LOGGED, 'true');
-          localStorage.setItem(StorageStrings.USER_TYPE,res.data.role);
-          if (res.data.role !== 'ROLE_USER'){
-            this.props.history.push(BASE_URL + '/manage-products');
+    if (!Validations.textFieldValidator(this.state.email, 1)) {
+      CommonFunc.notifyMessage('Please enter valid email address', 0);
+    }else if (!Validations.textFieldValidator(this.state.password, 1)) {
+      CommonFunc.notifyMessage('Please enter password', 0);
+    }else {
+      const obj = {
+        email:this.state.email,
+        password:this.state.password
+      }
+      await authService.loginUser(obj)
+        .then(res=>{
+          console.log('login response::::::::::::::',res)
+          if (res.success){
+            localStorage.setItem(StorageStrings.ACCESS_TOKEN, res.data.access_token);
+            Cookies.set(StorageStrings.ACCESS_TOKEN, res.data.access_token);
+            localStorage.setItem(StorageStrings.REFRESH_TOKEN, res.data.refresh_token);
+            Cookies.set(StorageStrings.REFRESH_TOKEN, res.data.refresh_token);
+            localStorage.setItem(StorageStrings.LOGGED, 'true');
+            localStorage.setItem(StorageStrings.USER_TYPE,res.data.role);
+            if (res.data.role !== 'ROLE_USER'){
+              this.props.history.push(BASE_URL + '/manage-products');
+            }else {
+              window.location = BASE_URL +  '/product-catalogue'
+              // this.props.history.push(BASE_URL + '/product-catalogue');
+            }
           }else {
-            window.location = BASE_URL +  '/product-catalogue'
-            // this.props.history.push(BASE_URL + '/product-catalogue');
+            CommonFunc.notifyMessage(res.message,res.status);
           }
-        }else {
-          CommonFunc.notifyMessage(res.message,res.status);
-        }
-        this.setState({loading: false})
-      })
-      .catch(err=>{
-        this.setState({loading: false})
-        console.log(err)
-      })
+          this.setState({loading: false})
+        })
+        .catch(err=>{
+          this.setState({loading: false})
+          console.log(err)
+        })
+    }
+
   }
 
   onTextChange = (event) => {

@@ -68,17 +68,19 @@ class ProductCatalogue extends Component {
         if (response.success) {
 
           response.data.map((items) => {
-            list.push({
-              productId: items.id,
-              productName: items.name,
-              description: items.description,
-              status: items.status,
-              unitPrice: items.price,
-              // image: items.imageUrl,
-              image: 'https://c8.alamy.com/comp/2CBHG1K/red-chilli-powder-with-dried-red-chillies-in-earthen-bowl-2CBHG1K.jpg',
-              categoryId: items.categoryId,
-              qty: items.qty
-            })
+            if(items.status){
+              list.push({
+                productId: items.id,
+                productName: items.name,
+                description: items.description,
+                status: items.status,
+                unitPrice: items.price,
+                // image: items.imageUrl,
+                image: 'https://c8.alamy.com/comp/2CBHG1K/red-chilli-powder-with-dried-red-chillies-in-earthen-bowl-2CBHG1K.jpg',
+                categoryId: items.categoryId,
+                qty: items.qty
+              })
+            }
           });
           await this.setState({list: list, loading: false});
           await this.onFilteredData();
