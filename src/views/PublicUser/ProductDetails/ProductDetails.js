@@ -12,7 +12,8 @@ const ProductDetails = () => {
     country: '',
     deliveryAddress: '',
     expectedDate: ''
-  });
+  });   
+  
 
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
