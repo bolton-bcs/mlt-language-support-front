@@ -94,3 +94,11 @@
 .cover-img{
   object-fit: cover!important;
 }
+
+.text-des {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* number of lines to show */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}

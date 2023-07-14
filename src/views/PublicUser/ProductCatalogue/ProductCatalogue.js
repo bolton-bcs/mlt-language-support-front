@@ -20,6 +20,7 @@ import '../../../App.scss'
 import {BASE_URL} from "../../../constance/Constance";
 import * as ProductService from "../../../services/product";
 import * as CommonFunc from "../../../utils/CommonFunc";
+import {Link} from "react-router-dom";
 
 class ProductCatalogue extends Component {
   state = {
@@ -179,16 +180,16 @@ class ProductCatalogue extends Component {
                         </Col>
 
                         <Col md={7}>
-                          <CardTitle tag="h5" className="text-black-50">
+                          <CardTitle tag="h5" className="text-black-50" >
                             {item.productName}
                           </CardTitle>
                           <CardSubtitle
-                            className="text-muted"
+                            className="text-muted mt-1 mb-1"
                             tag="h6"
                           >
                             LKR {item.unitPrice}
                           </CardSubtitle>
-                          <CardText className="text-black-50">
+                          <CardText className="text-black-50 text-des">
                             {item.description}
                           </CardText>
                         </Col>
@@ -196,11 +197,12 @@ class ProductCatalogue extends Component {
 
                       </Row>
 
-                      <div className="w-100 justify-content-center align-items-center d-flex mt-2">
-                        <Button className="text-center bg-success pl-3 pr-3"
-                                onClick={() => this.props.history.push(BASE_URL + '/product-details')}>
+                      <div className="w-100 justify-content-center align-items-center d-flex mt-4">
+                        <Link to={{pathname:BASE_URL + '/product-details', state: {productItem: item}}}>
+                        <Button className="text-center bg-success pl-3 pr-3">
                           Order now
                         </Button>
+                        </Link>
                       </div>
 
                     </CardBody>
