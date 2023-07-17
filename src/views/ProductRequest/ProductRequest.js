@@ -33,14 +33,15 @@ class ProductRequest extends Component {
       .then(res => {
         const list = [];
         if (res.success) {
-          res.data.map(item => {
+          res.datas.map(item => {
             list.push({
-              orderNo: item.id,
-              itemName: 'Papper',
+              orderNo: item.orderId,
+              itemName: item.productName,
               qty: item.qty,
               price: item.price,
               expectedDate: item.expectedDate.split('T')[0],
-              country: item.deliveryAddress
+              country: item.country.toUpperCase(),
+              address:item.deliveryAddress
             })
           })
           this.setState({loading: false, list: list})
@@ -64,6 +65,9 @@ class ProductRequest extends Component {
         <td>{items.qty}</td>
         <td>{items.price}</td>
         <td>{items.expectedDate}</td>
+        <td className={'btn-align'}>
+          {items.address}
+        </td>
         <td className={'btn-align'}>
           {items.country}
         </td>
@@ -121,6 +125,7 @@ class ProductRequest extends Component {
                     <th>Price</th>
                     <th>Expected Date</th>
                     <th>Delivery Address</th>
+                    <th>Country</th>
                     <th>Action</th>
                   </tr>
                   </thead>

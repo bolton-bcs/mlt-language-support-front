@@ -168,7 +168,7 @@ class ProductCatalogue extends Component {
             <Row className="flex-lg-grow-0">
               {this.state.filteredResultList.map((item, i) => (
                 <Col md={4} lg={4} sm={12} xl={4}>
-                  <Card style={{width: '21.5rem', marginTop: 10}}>
+                  <Card style={{ marginTop: 10}}>
                     <CardBody>
                       <Row>
                         <Col md={5}>
